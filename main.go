@@ -77,13 +77,13 @@ func main() {
 	fmt.Printf("UpdateDB%+v\n", user)
 
 	// DBのデータをDeleteします
-	err = table.Delete("UserID", "1").Range("Name", "Test1").Run()
+	err = table.Delete("UserID", "1234").Range("Name", "太郎").Run()
 	if err != nil {
 		panic(err)
 	}
 
 	// Delete出来ているか確認
-	err = table.Get("UserID", "1").Range("Name", dynamo.Equal, "Test1").One(&user)
+	err = table.Get("UserID", "1234").Range("Name", dynamo.Equal, "太郎").One(&user)
 	if err != nil {
 		// Delete出来ていれば、dynamo: no item found のエラーとなる
 		fmt.Println("getError:", err)
