@@ -1,5 +1,15 @@
 version: "3.8"
 services:
+  echo:
+    container_name: graphql-echo
+    build: .
+    ports:
+      - "1323:1323"
+    volumes:
+      - .:/app
+      - .env:/app/.env
+    working_dir: /app
+    command: sh -c 'go mod tidy && air'
   dynamodb-local:
     container_name: dynamodb-local
     image: "amazon/dynamodb-local:latest"
