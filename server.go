@@ -2,18 +2,21 @@ package main
 
 import (
 	"fmt"
-	"go-graphql-nosql/example"
+	"go-graphql-nosql/graph"
+	"log"
 	"net/http"
 	"os"
 
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/guregu/dynamo"
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
+
+const defaultPort = "8080"
 
 func main() {
 	// 環境変数読み込み
@@ -25,6 +28,10 @@ func main() {
 	// 環境変数から設定値を取得
 	awsRegion := os.Getenv("AWS_REGION")
 	dynamoEndpoint := os.Getenv("DYNAMO_ENDPOINT")
+	graphqlServerPort := os.Getenv("GRAPHQL_SERVER_PORT")
+	if graphqlServerPort == "" {
+		graphqlServerPort = defaultPort
+	}
 
 	// クライアントの設定
 	sess, err := session.NewSession(&aws.Config{
@@ -37,24 +44,17 @@ func main() {
 	}
 
 	// DynamoDB
-	db := dynamo.New(sess)
+	dynamo.New(sess)
+	// db := dynamo.New(sess)
+	// サンプルプログラム（一時コメントアウト）
+	// if err := example.Example(db); err != nil {
+	// 	panic(err)
+	// }
 
-	// Echo API（https://echo.labstack.com/）
-	e := echo.New()
-	// CORSの設定（https://echo.labstack.com/docs/middleware/cors）
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins:     []string{"http://localhost:3333"},
-		AllowMethods:     []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
-		AllowHeaders:     []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-		AllowCredentials: true,
-	}))
-	e.GET("/example", func(c echo.Context) error {
-		// 動作確認用のサンプルプログラム
-		if err := example.Example(db); err != nil {
-			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-		}
-		return c.String(http.StatusOK, "okey")
-	})
-	// サーバー起動
-	e.Logger.Fatal(e.Start(":1323"))
+	// GraphQLサーバーの設定
+	graphqlServer := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", graphqlServer)
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", graphqlServerPort)
+	log.Fatal(http.ListenAndServe(":"+graphqlServerPort, nil))
 }

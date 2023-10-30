@@ -22,7 +22,7 @@ COPY .env ./
 RUN go install github.com/cosmtrek/air@latest
 
 # ポートを開放
-EXPOSE 1323
+EXPOSE 8080
 
 # airでアプリケーションを起動
 CMD ["/go/bin/air"]
