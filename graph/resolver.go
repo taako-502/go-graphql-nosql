@@ -1,9 +1,9 @@
 package graph
 
 import (
-	"go-graphql-nosql/graph/model"
+	"github.com/guregu/dynamo"
 )
 
 type Resolver struct {
-	todos []*model.Todo
+	DB *dynamo.DB
 }

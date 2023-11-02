@@ -6,25 +6,36 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"go-graphql-nosql/graph/model"
-	"math/rand"
 )
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
 	todo := &model.Todo{
+		ID:     "unique-id",
 		Text:   input.Text,
-		ID:     fmt.Sprintf("T%d", rand.Int()),
+		Done:   false,
 		UserID: input.UserID,
 	}
-	r.todos = append(r.todos, todo)
+
+	table := r.DB.Table("Todos")
+	err := table.Put(todo).Run()
+	if err != nil {
+		return nil, err
+	}
+
 	return todo, nil
 }
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	return r.todos, nil
+	var todos []*model.Todo
+	table := r.DB.Table("Todos")
+	err := table.Scan().All(&todos)
+	if err != nil {
+		return nil, err
+	}
+	return todos, nil
 }
 
 // User is the resolver for the user field.
