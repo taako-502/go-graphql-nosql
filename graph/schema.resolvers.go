@@ -7,15 +7,26 @@ package graph
 import (
 	"context"
 	"go-graphql-nosql/graph/model"
+	"go-graphql-nosql/utility"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+	currentTime := utility.FormatDateForDynamoDB(time.Now())
+	uuid := uuid.NewString()
 	todo := &model.Todo{
-		ID:     "unique-id",
-		Text:   input.Text,
-		Done:   false,
-		UserID: input.UserID,
+		ID:          uuid,
+		Title:       input.Title,
+		Description: input.Description,
+		Done:        false,
+		UserID:      input.UserID,
+		DueDateTime: input.DueDateTime,
+		Status:      "CREATED",
+		CreatedAt:   currentTime,
+		UpdatedAt:   currentTime,
 	}
 
 	table := r.DB.Table("Todo")
