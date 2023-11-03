@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"go-graphql-nosql/graph/model"
 	"go-graphql-nosql/utility"
 	"time"
@@ -36,6 +37,16 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	}
 
 	return todo, nil
+}
+
+// UpdateTodoStatus is the resolver for the updateTodoStatus field.
+func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, status string) (*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: UpdateTodoStatus - updateTodoStatus"))
+}
+
+// DeleteTodoByID is the resolver for the deleteTodoById field.
+func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: DeleteTodoByID - deleteTodoById"))
 }
 
 // Todos is the resolver for the todos field.

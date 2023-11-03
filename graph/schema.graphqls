@@ -32,4 +32,6 @@ input NewTodo {
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  updateTodoStatus(id: ID!, status: String!): Todo!
+  deleteTodoById(id: ID!): Todo!
 }
