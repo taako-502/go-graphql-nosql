@@ -25,9 +25,16 @@ func getAwsConfig(endpoint string) *aws.Config {
 	if dynamoEndpoint == "" {
 		dynamoEndpoint = os.Getenv("DYNAMO_ENDPOINT")
 	}
+	accessKeyID := os.Getenv("AWS_ACCESS_KEY_ID")
+	secretAccessKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+	token := os.Getenv("AWS_SESSION_TOKEN")
 	return &aws.Config{
-		Region:      aws.String(awsRegion),
-		Endpoint:    aws.String(dynamoEndpoint),
-		Credentials: credentials.NewStaticCredentials("dummy", "dummy", "dummy"),
+		Region:   aws.String(awsRegion),
+		Endpoint: aws.String(dynamoEndpoint),
+		Credentials: credentials.NewStaticCredentials(
+			accessKeyID,
+			secretAccessKey,
+			token,
+		),
 	}
 }

@@ -26,7 +26,7 @@ func main() {
 	migrate := flag.Bool("migrate", false, "Run database migrations")
 	flag.Parse()
 
-	// go run main.go -migrate
+	// go run server.go -migrate
 	if *migrate {
 		// DynamoDBの初期化
 		endpoint := os.Getenv("MIGRATION_ENDPOINT")
