@@ -18,7 +18,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		UserID: input.UserID,
 	}
 
-	table := r.DB.Table("Todos")
+	table := r.DB.Table("Todo")
 	err := table.Put(todo).Run()
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
-	table := r.DB.Table("Todos")
+	table := r.DB.Table("Todo")
 	err := table.Scan().All(&todos)
 	if err != nil {
 		return nil, err
