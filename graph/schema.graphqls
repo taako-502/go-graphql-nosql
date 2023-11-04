@@ -16,7 +16,10 @@ type Todo {
 
 type User {
   id: ID!
-  name: String!
+  username: String!
+  passwordHash: String!
+  createdAt: String!
+  updatedAt: String!
 }
 
 type Query {
@@ -30,8 +33,14 @@ input NewTodo {
   userId: String!
 }
 
+input NewUser {
+  username: String!
+  password: String!
+}
+
 type Mutation {
   createTodo(input: NewTodo!): Todo!
   updateTodoStatus(id: ID!, status: String!): Todo!
   deleteTodoById(id: ID!): Todo!
+  createUser(input: NewUser!): User!
 }

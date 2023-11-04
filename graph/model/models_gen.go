@@ -9,7 +9,15 @@ type NewTodo struct {
 	UserID      string `json:"userId"`
 }
 
+type NewUser struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID           string `json:"id"`
+	Username     string `json:"username"`
+	PasswordHash string `json:"passwordHash"`
+	CreatedAt    string `json:"createdAt"`
+	UpdatedAt    string `json:"updatedAt"`
 }
