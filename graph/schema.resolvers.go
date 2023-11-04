@@ -31,8 +31,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 	}
 
 	table := r.DB.Table("Todo")
-	err := table.Put(todo).Run()
-	if err != nil {
+	if err := table.Put(todo).Run(); err != nil {
 		return nil, err
 	}
 
@@ -41,7 +40,11 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 
 // UpdateTodoStatus is the resolver for the updateTodoStatus field.
 func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, status string) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: UpdateTodoStatus - updateTodoStatus"))
+	table := r.DB.Table("Todo")
+	if err := table.Update("ID", id).Set("Status", status).Run(); err != nil {
+		return nil, err
+	}
+	return &model.Todo{ID: id, Status: status}, nil
 }
 
 // DeleteTodoByID is the resolver for the deleteTodoById field.
@@ -53,8 +56,7 @@ func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*mode
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
 	table := r.DB.Table("Todo")
-	err := table.Scan().All(&todos)
-	if err != nil {
+	if err := table.Scan().All(&todos); err != nil {
 		return nil, err
 	}
 	return todos, nil
