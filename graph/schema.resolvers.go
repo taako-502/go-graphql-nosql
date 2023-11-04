@@ -7,32 +7,58 @@ package graph
 import (
 	"context"
 	"go-graphql-nosql/graph/model"
+	"go-graphql-nosql/utility"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+	currentTime := utility.FormatDateForDynamoDB(time.Now())
+	uuid := uuid.NewString()
 	todo := &model.Todo{
-		ID:     "unique-id",
-		Text:   input.Text,
-		Done:   false,
-		UserID: input.UserID,
+		ID:          uuid,
+		Title:       input.Title,
+		Description: input.Description,
+		Done:        false,
+		UserID:      input.UserID,
+		DueDateTime: input.DueDateTime,
+		Status:      "CREATED",
+		CreatedAt:   currentTime,
+		UpdatedAt:   currentTime,
 	}
 
 	table := r.DB.Table("Todo")
-	err := table.Put(todo).Run()
-	if err != nil {
+	if err := table.Put(todo).Run(); err != nil {
 		return nil, err
 	}
 
 	return todo, nil
 }
 
+// UpdateTodoStatus is the resolver for the updateTodoStatus field.
+func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, status string) (*model.Todo, error) {
+	table := r.DB.Table("Todo")
+	if err := table.Update("ID", id).Set("Status", status).Run(); err != nil {
+		return nil, err
+	}
+	return &model.Todo{ID: id, Status: status}, nil
+}
+
+// DeleteTodoByID is the resolver for the deleteTodoById field.
+func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*model.Todo, error) {
+	if err := r.DB.Table("Todo").Delete("ID", id).Run(); err != nil {
+		return nil, err
+	}
+	return &model.Todo{ID: id}, nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
 	table := r.DB.Table("Todo")
-	err := table.Scan().All(&todos)
-	if err != nil {
+	if err := table.Scan().All(&todos); err != nil {
 		return nil, err
 	}
 	return todos, nil
