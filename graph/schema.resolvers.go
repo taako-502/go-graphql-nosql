@@ -47,7 +47,7 @@ func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, stat
 }
 
 // DeleteTodoByID is the resolver for the deleteTodoById field.
-func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*model.Todo, error) {
+func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*model.Todo, error) {
 	if err := r.DB.Table("Todo").Delete("ID", id).Run(); err != nil {
 		return nil, err
 	}
@@ -72,6 +72,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	}
 
 	return user, nil
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.User, error) {
+	// TODO: Todoが存在する場合は削除できないようにする
+	if err := r.DB.Table("User").Delete("ID", id).Run(); err != nil {
+		return nil, err
+	}
+	return &model.User{ID: id}, nil
 }
 
 // Todos is the resolver for the todos field.
