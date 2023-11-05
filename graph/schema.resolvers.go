@@ -14,6 +14,25 @@ import (
 	"github.com/google/uuid"
 )
 
+// Login is the resolver for the login field.
+func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*model.User, error) {
+	var users []*model.User
+	if err := r.DB.Table("User").Scan().Filter("'Username' = ?", username).All(&users); err != nil {
+		return nil, err
+	}
+
+	if len(users) == 0 {
+		return nil, errors.New("user not found")
+	}
+
+	user := users[0]
+	if !utility.CheckPasswordHash(password, user.PasswordHash) {
+		return nil, errors.New("invalid password")
+	}
+
+	return user, nil
+}
+
 // CreateTodo is the resolver for the createTodo field.
 func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
 	currentTime := utility.FormatDateForDynamoDB(time.Now())
@@ -82,8 +101,12 @@ func (r *mutationResolver) DeleteTodoByUserID(ctx context.Context, userID string
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	// FIXME: 既に同じユーザー名が存在する場合はエラーを返す。
 	currentTime := utility.FormatDateForDynamoDB(time.Now())
-	passwordHash := utility.HashPassword(input.Password)
+	passwordHash, err := utility.HashPassword(input.Password)
+	if err != nil {
+		return nil, err
+	}
 	uuid := uuid.NewString()
 	user := &model.User{
 		ID:           uuid,
