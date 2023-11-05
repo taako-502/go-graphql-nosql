@@ -24,6 +24,7 @@ type User {
 
 type Query {
   todos: [Todo!]!
+  todosByUserId(userID: ID!): [Todo!]!
   users: [User!]!
 }
 

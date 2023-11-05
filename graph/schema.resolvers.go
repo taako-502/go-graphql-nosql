@@ -123,6 +123,15 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	return todos, nil
 }
 
+// TodosByUserID is the resolver for the todosByUserId field.
+func (r *queryResolver) TodosByUserID(ctx context.Context, userID string) ([]*model.Todo, error) {
+	var todos []*model.Todo
+	if err := r.DB.Table("Todo").Scan().Filter("'UserID' = ?", userID).All(&todos); err != nil {
+		return nil, err
+	}
+	return todos, nil
+}
+
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	var users []*model.User
