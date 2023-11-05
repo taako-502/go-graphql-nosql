@@ -54,6 +54,32 @@ func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*model.To
 	return &model.Todo{ID: id}, nil
 }
 
+// DeleteTodoByUserID is the resolver for the deleteTodoByUserId field.
+func (r *mutationResolver) DeleteTodoByUserID(ctx context.Context, userID string) (int, error) {
+	// 削除するTodoのリストを取得する。
+	var todos []*model.Todo
+	if err := r.DB.Table("Todo").Scan().Filter("'UserID' = ?", userID).All(&todos); err != nil {
+		return 0, err
+	}
+
+	if len(todos) == 0 {
+		return 0, nil
+	}
+
+	// 削除するアイテムの数をカウントする。
+	deletedCount := 0
+	for _, todo := range todos {
+		if err := r.DB.Table("Todo").Delete("ID", todo.ID).Run(); err != nil {
+			// 一つでも削除に失敗した場合はエラーを返す。
+			return deletedCount, err
+		}
+		deletedCount++
+	}
+
+	// 削除したアイテムの数を返す。
+	return deletedCount, nil
+}
+
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	currentTime := utility.FormatDateForDynamoDB(time.Now())
