@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"go-graphql-nosql/graph/model"
 	"go-graphql-nosql/utility"
 	"time"
@@ -29,8 +30,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		UpdatedAt:   currentTime,
 	}
 
-	table := r.DB.Table("Todo")
-	if err := table.Put(todo).Run(); err != nil {
+	if err := r.DB.Table("Todo").Put(todo).Run(); err != nil {
 		return nil, err
 	}
 
@@ -76,7 +76,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.User, error) {
-	// TODO: Todoが存在する場合は削除できないようにする
+	var todos []*model.Todo
+	r.DB.Table("Todo").Scan().Filter("'UserID' = ?", id).All(&todos)
+	if len(todos) > 0 {
+		return nil, errors.New("user still has todos")
+	}
+
 	if err := r.DB.Table("User").Delete("ID", id).Run(); err != nil {
 		return nil, err
 	}
