@@ -54,11 +54,30 @@ func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*mode
 	return &model.Todo{ID: id}, nil
 }
 
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	currentTime := utility.FormatDateForDynamoDB(time.Now())
+	passwordHash := utility.HashPassword(input.Password)
+	uuid := uuid.NewString()
+	user := &model.User{
+		ID:           uuid,
+		Username:     input.Username,
+		PasswordHash: passwordHash,
+		CreatedAt:    currentTime,
+		UpdatedAt:    currentTime,
+	}
+
+	if err := r.DB.Table("User").Put(user).Run(); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
-	table := r.DB.Table("Todo")
-	if err := table.Scan().All(&todos); err != nil {
+	if err := r.DB.Table("Todo").Scan().All(&todos); err != nil {
 		return nil, err
 	}
 	return todos, nil
@@ -66,7 +85,7 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 // User is the resolver for the user field.
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: obj.UserID, Name: "user " + obj.UserID}, nil
+	return &model.User{ID: obj.UserID, Username: "user " + obj.UserID}, nil
 }
 
 // Mutation returns MutationResolver implementation.
