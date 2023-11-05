@@ -14,15 +14,8 @@ type DDBMnager struct {
 }
 
 func (d *DDBMnager) Migration() error {
-	// exist, err := d.TableExists("Todo")
-	// if err != nil {
-	// 	return err
-	// }
-	// if !exist {
-	// 	d.TableCreate("Todo")
-	// }
-	for _, table := range []string{"Todo", "User"} {
-
+	tables := []string{"Todo", "User"}
+	for _, table := range tables {
 		exist, err := d.TableExists(table)
 		if err != nil {
 			return err
