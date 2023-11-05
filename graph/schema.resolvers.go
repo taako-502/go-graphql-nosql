@@ -101,7 +101,12 @@ func (r *mutationResolver) DeleteTodoByUserID(ctx context.Context, userID string
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	// FIXME: 既に同じユーザー名が存在する場合はエラーを返す。
+	var users []*model.User
+	r.DB.Table("User").Scan().Filter("'Username' = ?", input.Username).All(&users)
+	if len(users) > 0 {
+		return nil, errors.New("user already exists")
+	}
+
 	currentTime := utility.FormatDateForDynamoDB(time.Now())
 	passwordHash, err := utility.HashPassword(input.Password)
 	if err != nil {
