@@ -14,21 +14,26 @@ type DDBMnager struct {
 }
 
 func (d *DDBMnager) Migration() error {
-	// exist, err := d.TableExists("Todo")
-	// if err != nil {
-	// 	return err
-	// }
-	// if !exist {
-	// 	d.TableCreate("Todo")
-	// }
-	if err := d.TableCreate("Todo"); err != nil {
-		return err
+	tables := []string{"Todo", "User"}
+	for _, table := range tables {
+		exist, err := d.TableExists(table)
+		if err != nil {
+			return err
+		}
+		if exist {
+			log.Printf("Table %s already exists", table)
+			continue
+		}
+
+		if err := d.TableCreate(table); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (d *DDBMnager) TableExists(tableName string) (bool, error) {
-	if _, err := d.DB.Table("Todos").Describe().Run(); err != nil {
+	if _, err := d.DB.Table(tableName).Describe().Run(); err != nil {
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == dynamodb.ErrCodeResourceNotFoundException {
 			return false, nil
 		}
@@ -38,7 +43,7 @@ func (d *DDBMnager) TableExists(tableName string) (bool, error) {
 }
 
 func (d *DDBMnager) TableCreate(tableName string) error {
-	if err := d.DB.CreateTable("Todo", model.Todo{}).Run(); err != nil {
+	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(); err != nil {
 		log.Fatalf("Unable to create table: %s", err)
 		return err
 	}

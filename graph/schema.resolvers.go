@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"go-graphql-nosql/graph/model"
 	"go-graphql-nosql/utility"
 	"time"
@@ -29,8 +30,7 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 		UpdatedAt:   currentTime,
 	}
 
-	table := r.DB.Table("Todo")
-	if err := table.Put(todo).Run(); err != nil {
+	if err := r.DB.Table("Todo").Put(todo).Run(); err != nil {
 		return nil, err
 	}
 
@@ -47,26 +47,75 @@ func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, stat
 }
 
 // DeleteTodoByID is the resolver for the deleteTodoById field.
-func (r *mutationResolver) DeleteTodoByID(ctx context.Context, id string) (*model.Todo, error) {
+func (r *mutationResolver) DeleteTodo(ctx context.Context, id string) (*model.Todo, error) {
 	if err := r.DB.Table("Todo").Delete("ID", id).Run(); err != nil {
 		return nil, err
 	}
 	return &model.Todo{ID: id}, nil
 }
 
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	currentTime := utility.FormatDateForDynamoDB(time.Now())
+	passwordHash := utility.HashPassword(input.Password)
+	uuid := uuid.NewString()
+	user := &model.User{
+		ID:           uuid,
+		Username:     input.Username,
+		PasswordHash: passwordHash,
+		CreatedAt:    currentTime,
+		UpdatedAt:    currentTime,
+	}
+
+	if err := r.DB.Table("User").Put(user).Run(); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.User, error) {
+	var todos []*model.Todo
+	r.DB.Table("Todo").Scan().Filter("'UserID' = ?", id).All(&todos)
+	if len(todos) > 0 {
+		return nil, errors.New("user still has todos")
+	}
+
+	if err := r.DB.Table("User").Delete("ID", id).Run(); err != nil {
+		return nil, err
+	}
+	return &model.User{ID: id}, nil
+}
+
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 	var todos []*model.Todo
-	table := r.DB.Table("Todo")
-	if err := table.Scan().All(&todos); err != nil {
+	if err := r.DB.Table("Todo").Scan().All(&todos); err != nil {
 		return nil, err
 	}
 	return todos, nil
 }
 
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	var users []*model.User
+	if err := r.DB.Table("User").Scan().All(&users); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
 // User is the resolver for the user field.
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: obj.UserID, Name: "user " + obj.UserID}, nil
+	var user model.User
+	if err := r.DB.Table("User").Get("ID", obj.UserID).One(&user); err != nil {
+		if err.Error() == "dynamo: no item found" {
+			return &model.User{}, nil
+		}
+		return nil, err
+	}
+	return &user, nil
 }
 
 // Mutation returns MutationResolver implementation.
