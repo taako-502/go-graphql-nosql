@@ -85,7 +85,14 @@ func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
 
 // User is the resolver for the user field.
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
-	return &model.User{ID: obj.UserID, Username: "user " + obj.UserID}, nil
+	user := &model.User{}
+	if err := r.DB.Table("User").Get("ID", obj.UserID).One(user); err != nil {
+		if err.Error() == "dynamo: no item found" {
+			return &model.User{}, nil
+		}
+		return nil, err
+	}
+	return user, nil
 }
 
 // Mutation returns MutationResolver implementation.
