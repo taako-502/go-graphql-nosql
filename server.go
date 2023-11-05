@@ -35,8 +35,7 @@ func main() {
 
 		// マイグレーション実行
 		fmt.Println("Running migrations...")
-		err := manager.Migration()
-		if err != nil {
+		if err := manager.Migration(); err != nil {
 			log.Fatalf("マイグレーションに失敗しました: %v", err)
 			os.Exit(1)
 		}
