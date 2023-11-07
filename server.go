@@ -1,6 +1,8 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"flag"
 	"fmt"
 	ddbmanager "go-graphql-nosql/dynamodb"
@@ -9,6 +11,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -16,6 +19,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 const defaultPort = "8080"
@@ -93,6 +97,27 @@ func main() {
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 		},
+	})
+	graphqlServer.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
+		var extension map[string]interface{}
+		if errors.Is(err, graph.ErrUserNotFound) {
+			extension = map[string]interface{}{
+				"code":   "USER_NOT_FOUND",
+				"status": http.StatusBadRequest,
+			}
+		} else if errors.Is(err, graph.ErrCodeLoginFailed) {
+			extension = map[string]interface{}{
+				"code":   "LOGIN_FAILED",
+				"status": http.StatusBadRequest,
+			}
+		}
+		return &gqlerror.Error{
+			Message:    err.Error(),
+			Path:       graphql.GetPath(ctx),
+			Locations:  nil,
+			Extensions: extension,
+			Rule:       "",
+		}
 	})
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", graphqlServer)

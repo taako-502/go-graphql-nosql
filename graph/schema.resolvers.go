@@ -18,16 +18,16 @@ import (
 func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*model.User, error) {
 	var users []*model.User
 	if err := r.DB.Table("User").Scan().Filter("'Username' = ?", username).All(&users); err != nil {
-		return nil, err
+		return nil, errors.New("failed to get user")
 	}
 
 	if len(users) == 0 {
-		return nil, errors.New("user not found")
+		return nil, ErrUserNotFound
 	}
 
 	user := users[0]
 	if !utility.CheckPasswordHash(password, user.PasswordHash) {
-		return nil, errors.New("invalid password")
+		return nil, ErrCodeLoginFailed
 	}
 
 	return user, nil
