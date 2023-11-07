@@ -10,8 +10,12 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
+	"github.com/gorilla/websocket"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 )
 
 const defaultPort = "8080"
@@ -57,11 +61,44 @@ func main() {
 	}
 
 	// GraphQLサーバーの設定
+	router := chi.NewRouter()
+	frontendHost := os.Getenv("FRONTEND_HOST")
+	graphqlServerHost := os.Getenv("GRAPHQL_SERVER_HOST")
+	router.Use(cors.New(cors.Options{
+		AllowedOrigins: []string{
+			frontendHost,
+			graphqlServerHost,
+		},
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPatch,
+			http.MethodDelete,
+			http.MethodPut,
+			http.MethodOptions,
+		},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+		Debug:            true,
+	}).Handler)
 	graphqlServer := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
 		DB: db,
 	}}))
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", graphqlServer)
+	domain := os.Getenv("DOMAIN")
+	graphqlServer.AddTransport(&transport.Websocket{
+		Upgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return r.Host == domain
+			},
+			ReadBufferSize:  1024,
+			WriteBufferSize: 1024,
+		},
+	})
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", graphqlServer)
+
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", graphqlServerPort)
-	log.Fatal(http.ListenAndServe(":"+graphqlServerPort, nil))
+	if err := http.ListenAndServe(":"+graphqlServerPort, router); err != nil {
+		panic(err)
+	}
 }
