@@ -24,7 +24,7 @@ type User {
 
 type Query {
   todos: [Todo!]!
-  todosByUserId(userID: ID!): [Todo!]!
+  todosByUserId(userId: ID!): [Todo!]!
   users: [User!]!
 }
 
@@ -45,7 +45,7 @@ type Mutation {
   createTodo(input: NewTodo!): Todo!
   updateTodoStatus(id: ID!, status: String!): Todo!
   deleteTodo(id: ID!): Todo!
-  deleteTodoByUserId(userID: ID!): Int!
+  deleteTodoByUserId(userId: ID!): Int!
   createUser(input: NewUser!): User!
   deleteUser(id: ID!): User!
 }
