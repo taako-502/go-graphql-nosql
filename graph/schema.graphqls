@@ -26,6 +26,7 @@ type Query {
   todos: [Todo!]!
   todosByUserId(userId: ID!): [Todo!]!
   users: [User!]!
+  userById(id: ID!): User!
 }
 
 input NewTodo {

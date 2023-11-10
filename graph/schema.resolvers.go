@@ -176,6 +176,18 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 	return users, nil
 }
 
+// UserByID is the resolver for the userById field.
+func (r *queryResolver) UserByID(ctx context.Context, id string) (*model.User, error) {
+	var user model.User
+	if err := r.DB.Table("User").Get("ID", id).One(&user); err != nil {
+		if err.Error() == "dynamo: no item found" {
+			return &model.User{}, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
 // User is the resolver for the user field.
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
 	var user model.User
