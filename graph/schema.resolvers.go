@@ -58,11 +58,18 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) 
 
 // UpdateTodoStatus is the resolver for the updateTodoStatus field.
 func (r *mutationResolver) UpdateTodoStatus(ctx context.Context, id string, status string) (*model.Todo, error) {
-	table := r.DB.Table("Todo")
-	if err := table.Update("ID", id).Set("Status", status).Run(); err != nil {
+	if err := r.DB.Table("Todo").Update("ID", id).Set("Status", status).Run(); err != nil {
 		return nil, err
 	}
 	return &model.Todo{ID: id, Status: status}, nil
+}
+
+// UpdateTodoDone is the resolver for the updateTodoDone field.
+func (r *mutationResolver) UpdateTodoDone(ctx context.Context, id string, done bool) (*model.Todo, error) {
+	if err := r.DB.Table("Todo").Update("ID", id).Set("Done", done).Run(); err != nil {
+		return nil, err
+	}
+	return &model.Todo{ID: id, Done: done}, nil
 }
 
 // DeleteTodoByID is the resolver for the deleteTodoById field.

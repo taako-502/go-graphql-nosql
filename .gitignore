@@ -21,4 +21,8 @@
 go.work
 .env
 
+# DynamoDB
+docker/
+dynamodb/data/
+
 tmp/

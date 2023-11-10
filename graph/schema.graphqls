@@ -44,6 +44,7 @@ type Mutation {
   login(username: String!, password: String!): User
   createTodo(input: NewTodo!): Todo!
   updateTodoStatus(id: ID!, status: String!): Todo!
+  updateTodoDone(id: ID!, done: Boolean!): Todo!
   deleteTodo(id: ID!): Todo!
   deleteTodoByUserId(userId: ID!): Int!
   createUser(input: NewUser!): User!
