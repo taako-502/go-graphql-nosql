@@ -18,6 +18,7 @@ type User {
   id: ID!
   username: String!
   passwordHash: String!
+  isAdmin: Boolean!
   createdAt: String!
   updatedAt: String!
 }
