@@ -1,5 +1,8 @@
 service: staggered-scheduler
 
+# NOTE: Serverlessのバージョンを最新化させると不要になるとのこと
+useDotenv: true
+
 provider:
   name: aws
   region: ap-northeast-1
@@ -26,13 +29,13 @@ functions:
           path: /graphql
           method: POST
     environment:
-      FRONTEND_HOST: ${FRONTEND_HOST}
-      GRAPHQL_SERVER_PORT: ${GRAPHQL_SERVER_PORT}
-      GRAPHQL_SERVER_HOST: ${GRAPHQL_SERVER_HOST}
-      DOMAIN: ${DOMAIN}
-      AWS_REGION: ${AWS_REGION}
-      DYNAMO_ENDPOINT: ${DYNAMO_ENDPOINT}
-      MIGRATION_ENDPOINT: ${MIGRATION_ENDPOINT}
+      FRONTEND_HOST: ${env:FRONTEND_HOST}
+      GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
+      GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
+      DOMAIN: ${env:DOMAIN}
+      AWS_REGION: ${env:AWS_REGION}
+      DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
+      MIGRATION_ENDPOINT: ${env:MIGRATION_ENDPOINT}
       # Lambdaで予約されている環境変数のため、コメントアウト
       # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       # AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
