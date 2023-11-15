@@ -26,3 +26,4 @@ docker/
 dynamodb/data/
 
 tmp/
+bin/handler

@@ -17,6 +17,12 @@ docker-compose build
 docker-compose up -d
 ```
 
+## Deploy
+
+```bash
+make && serverless deploy
+```
+
 ## Frontend
 
 https://github.com/taako-502/staggered-scheduler
