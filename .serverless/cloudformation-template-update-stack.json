@@ -141,13 +141,6 @@
                     "dynamodb:*"
                   ],
                   "Resource": "arn:aws:dynamodb:ap-northeast-1:*:table/go-graphql-users"
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "dynamodb:*"
-                  ],
-                  "Resource": "arn:aws:dynamodb:ap-northeast-1:*:table/go-graphql-users"
                 }
               ]
             }
@@ -176,13 +169,24 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700051081039-2023-11-15T12:24:41.039Z/staggered-scheduler.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700074327461-2023-11-15T18:52:07.461Z/staggered-scheduler.zip"
         },
         "Handler": "bin/handler",
         "Runtime": "go1.x",
         "FunctionName": "staggered-scheduler-prod-handler",
         "MemorySize": 1024,
         "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "FRONTEND_HOST": "${FRONTEND_HOST}",
+            "GRAPHQL_SERVER_PORT": "${GRAPHQL_SERVER_PORT}",
+            "GRAPHQL_SERVER_HOST": "${GRAPHQL_SERVER_HOST}",
+            "DOMAIN": "${DOMAIN}",
+            "AWS_REGION": "${AWS_REGION}",
+            "DYNAMO_ENDPOINT": "${DYNAMO_ENDPOINT}",
+            "MIGRATION_ENDPOINT": "${MIGRATION_ENDPOINT}"
+          }
+        },
         "Role": {
           "Fn::GetAtt": [
             "IamRoleLambdaExecution",
@@ -194,7 +198,7 @@
         "HandlerLogGroup"
       ]
     },
-    "HandlerLambdaVersionui7lu8alRCeu4a08bfkLOXVLPnZDG30r0ApiNdg": {
+    "HandlerLambdaVersionHUObWVFNncobiECIfrSNCY4y5Pxt4sjSTFS3YhWSa0": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -277,7 +281,7 @@
         "HandlerLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1700051079655": {
+    "ApiGatewayDeployment1700074325972": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -360,7 +364,7 @@
     "HandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HandlerLambdaVersionui7lu8alRCeu4a08bfkLOXVLPnZDG30r0ApiNdg"
+        "Ref": "HandlerLambdaVersionHUObWVFNncobiECIfrSNCY4y5Pxt4sjSTFS3YhWSa0"
       },
       "Export": {
         "Name": "sls-staggered-scheduler-prod-HandlerLambdaFunctionQualifiedArn"
