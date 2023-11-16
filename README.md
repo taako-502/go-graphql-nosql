@@ -23,6 +23,12 @@ docker-compose up -d
 make && serverless deploy
 ```
 
+## Build
+
+```bash
+go build -o bin/handler handler/server.go
+```
+
 ## Frontend
 
 https://github.com/taako-502/staggered-scheduler

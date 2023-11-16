@@ -30,13 +30,14 @@ functions:
       - http:
           path: /graphql
           method: POST
+          cors: true
     environment:
-      FRONTEND_HOST: ${env:FRONTEND_HOST}
-      GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
-      GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
-      DOMAIN: ${env:DOMAIN}
-      DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
-      MIGRATION_ENDPOINT: ${env:MIGRATION_ENDPOINT}
+      FRONTEND_HOST: ${param:FRONTEND_HOST}
+      GRAPHQL_SERVER_PORT: ${param:GRAPHQL_SERVER_PORT}
+      GRAPHQL_SERVER_HOST: ${param:GRAPHQL_SERVER_HOST}
+      DOMAIN: ${param:DOMAIN}
+      DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT}
+      MIGRATION_ENDPOINT: ${param:MIGRATION_ENDPOINT}
       # Lambdaで予約されている環境変数のため、コメントアウト
       # AWS_REGION: ${env:AWS_REGION}
       # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -59,7 +60,7 @@ resources:
           WriteCapacityUnits: 1
 
 outputs:
-  FRONTEND_HOST: ${env:FRONTEND_HOST}
+  FRONTEND_HOST: ${param:FRONTEND_HOST}
   GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
   GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
   DOMAIN: ${env:DOMAIN}

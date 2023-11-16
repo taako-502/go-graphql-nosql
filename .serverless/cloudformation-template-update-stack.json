@@ -215,7 +215,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700150505706-2023-11-16T16:01:45.706Z/staggered-scheduler.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700161182278-2023-11-16T18:59:42.278Z/staggered-scheduler.zip"
         },
         "Handler": "bin/handler",
         "Runtime": "go1.x",
@@ -243,14 +243,14 @@
         "HandlerLogGroup"
       ]
     },
-    "HandlerLambdaVersionemiBE1HZaso5wGtfDACzhpUOfvjtmnNQh7OH4QNUv8": {
+    "HandlerLambdaVersionn195vArAbnyxmEHksfu3vKCamf5AGjauPrdV1vhxbo": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HandlerLambdaFunction"
         },
-        "CodeSha256": "QpCp3a+X9h7a/0R4q2wbtPV5do3CO2XftMaVGLwrq5A="
+        "CodeSha256": "dE351FtQqA60lsHq4qAbMBHttCIBdEsrsU4zaY0a5qU="
       }
     },
     "ApiGatewayRestApi": {
@@ -275,6 +275,51 @@
           ]
         },
         "PathPart": "graphql",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodGraphqlOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceGraphql"
+        },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -326,7 +371,7 @@
         "HandlerLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1700150497205": {
+    "ApiGatewayDeployment1700161173586": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -335,6 +380,7 @@
         "StageName": "prod"
       },
       "DependsOn": [
+        "ApiGatewayMethodGraphqlOptions",
         "ApiGatewayMethodGraphqlPost"
       ]
     },
@@ -484,7 +530,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700150505706-2023-11-16T16:01:45.706Z/custom-resources.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700161182278-2023-11-16T18:59:42.278Z/custom-resources.zip"
         },
         "FunctionName": "staggered-scheduler-prod-custom-resource-apigw-cw-role",
         "Handler": "api-gateway-cloud-watch-role/handler.handler",
@@ -547,7 +593,7 @@
     "HandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HandlerLambdaVersionemiBE1HZaso5wGtfDACzhpUOfvjtmnNQh7OH4QNUv8"
+        "Ref": "HandlerLambdaVersionn195vArAbnyxmEHksfu3vKCamf5AGjauPrdV1vhxbo"
       },
       "Export": {
         "Name": "sls-staggered-scheduler-prod-HandlerLambdaFunctionQualifiedArn"
