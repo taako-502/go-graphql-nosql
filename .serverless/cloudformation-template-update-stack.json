@@ -162,6 +162,52 @@
         }
       }
     },
+    "EnterpriseLogAccessIamRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "arn:aws:iam::802587217904:root"
+              },
+              "Action": "sts:AssumeRole",
+              "Condition": {
+                "StringEquals": {
+                  "sts:ExternalId": "ServerlessEnterprise-6b8eb4ec-a561-4e71-bc65-552963524f17"
+                }
+              }
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "LogFilterAccess",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:FilterLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "HandlerLogGroup",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "HandlerLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -169,7 +215,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700075229572-2023-11-15T19:07:09.572Z/staggered-scheduler.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700150505706-2023-11-16T16:01:45.706Z/staggered-scheduler.zip"
         },
         "Handler": "bin/handler",
         "Runtime": "go1.x",
@@ -182,7 +228,6 @@
             "GRAPHQL_SERVER_PORT": "8080",
             "GRAPHQL_SERVER_HOST": "https://staggered-scheduler.vercel.app",
             "DOMAIN": "staggered-scheduler.vercel.app",
-            "AWS_REGION": "ap-northeast-1",
             "DYNAMO_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
             "MIGRATION_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com"
           }
@@ -198,7 +243,7 @@
         "HandlerLogGroup"
       ]
     },
-    "HandlerLambdaVersionikXTRChZPhKCZis1eTBZ9QZTaPlw31UzVA190FQl1LY": {
+    "HandlerLambdaVersionemiBE1HZaso5wGtfDACzhpUOfvjtmnNQh7OH4QNUv8": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -281,7 +326,7 @@
         "HandlerLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1700075227915": {
+    "ApiGatewayDeployment1700150497205": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -330,6 +375,133 @@
         }
       }
     },
+    "ApiGatewayLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/api-gateway/staggered-scheduler-prod"
+      }
+    },
+    "CustomApiGatewayAccountCloudWatchRole": {
+      "Type": "Custom::ApiGatewayAccountRole",
+      "Version": 1,
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomDashresourceDashapigwDashcwDashroleLambdaFunction",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "IamRoleCustomResourcesLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "prod",
+                  "staggered-scheduler",
+                  "custom-resources-lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "iam:",
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        "role/*"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "iam:AttachRolePolicy",
+                    "iam:CreateRole",
+                    "iam:ListAttachedRolePolicies",
+                    "iam:PassRole"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "apigateway:*::/account"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "apigateway:GET",
+                    "apigateway:PATCH"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CustomDashresourceDashapigwDashcwDashroleLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/staggered-scheduler/prod/1700150505706-2023-11-16T16:01:45.706Z/custom-resources.zip"
+        },
+        "FunctionName": "staggered-scheduler-prod-custom-resource-apigw-cw-role",
+        "Handler": "api-gateway-cloud-watch-role/handler.handler",
+        "MemorySize": 1024,
+        "Runtime": "nodejs16.x",
+        "Timeout": 180,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleCustomResourcesLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "IamRoleCustomResourcesLambdaExecution"
+      ]
+    },
     "UsersTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
@@ -361,10 +533,21 @@
         "Name": "sls-staggered-scheduler-prod-ServerlessDeploymentBucketName"
       }
     },
+    "EnterpriseLogAccessIamRole": {
+      "Value": {
+        "Fn::GetAtt": [
+          "EnterpriseLogAccessIamRole",
+          "Arn"
+        ]
+      },
+      "Export": {
+        "Name": "sls-staggered-scheduler-prod-EnterpriseLogAccessIamRole"
+      }
+    },
     "HandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HandlerLambdaVersionikXTRChZPhKCZis1eTBZ9QZTaPlw31UzVA190FQl1LY"
+        "Ref": "HandlerLambdaVersionemiBE1HZaso5wGtfDACzhpUOfvjtmnNQh7OH4QNUv8"
       },
       "Export": {
         "Name": "sls-staggered-scheduler-prod-HandlerLambdaFunctionQualifiedArn"

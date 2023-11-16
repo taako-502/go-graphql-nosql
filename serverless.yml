@@ -1,4 +1,6 @@
 service: staggered-scheduler
+org: takao
+app: staggered-scheduler
 
 # NOTE: Serverlessのバージョンを最新化させると不要になるとのこと
 useDotenv: true
@@ -33,10 +35,10 @@ functions:
       GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
       GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
       DOMAIN: ${env:DOMAIN}
-      AWS_REGION: ${env:AWS_REGION}
       DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
       MIGRATION_ENDPOINT: ${env:MIGRATION_ENDPOINT}
       # Lambdaで予約されている環境変数のため、コメントアウト
+      # AWS_REGION: ${env:AWS_REGION}
       # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       # AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       # AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}
@@ -55,3 +57,11 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+
+outputs:
+  FRONTEND_HOST: ${env:FRONTEND_HOST}
+  GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
+  GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
+  DOMAIN: ${env:DOMAIN}
+  DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
+  MIGRATION_ENDPOINT: ${env:MIGRATION_ENDPOINT}
