@@ -2,9 +2,6 @@ service: staggered-scheduler
 org: takao
 app: staggered-scheduler
 
-# NOTE: Serverlessのバージョンを最新化させると不要になるとのこと
-useDotenv: true
-
 provider:
   name: aws
   region: ap-northeast-1
@@ -61,8 +58,8 @@ resources:
 
 outputs:
   FRONTEND_HOST: ${param:FRONTEND_HOST}
-  GRAPHQL_SERVER_PORT: ${env:GRAPHQL_SERVER_PORT}
-  GRAPHQL_SERVER_HOST: ${env:GRAPHQL_SERVER_HOST}
-  DOMAIN: ${env:DOMAIN}
-  DYNAMO_ENDPOINT: ${env:DYNAMO_ENDPOINT}
-  MIGRATION_ENDPOINT: ${env:MIGRATION_ENDPOINT}
+  GRAPHQL_SERVER_PORT: ${param:GRAPHQL_SERVER_PORT}
+  GRAPHQL_SERVER_HOST: ${param:GRAPHQL_SERVER_HOST}
+  DOMAIN: ${param:DOMAIN}
+  DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT}
+  MIGRATION_ENDPOINT: ${param:MIGRATION_ENDPOINT}
