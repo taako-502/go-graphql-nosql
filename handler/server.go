@@ -67,11 +67,11 @@ func main() {
 	// GraphQLサーバーの設定
 	router := chi.NewRouter()
 	frontendHost := os.Getenv("FRONTEND_HOST")
-	graphqlServerHost := os.Getenv("GRAPHQL_SERVER_HOST")
+	// graphqlServerHost := os.Getenv("GRAPHQL_SERVER_HOST")
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins: []string{
 			frontendHost,
-			graphqlServerHost,
+			// graphqlServerHost,
 		},
 		AllowedMethods: []string{
 			http.MethodGet,
