@@ -19,7 +19,7 @@ jobs:
           go-version: "1.21.3"
 
       - name: DynamoDB Migration
-        run: go run server.go -migrate
+        run: go run handler/server.go -migrate
         env:
           AWS_REGION: ${{ vars.AWS_REGION }}
           MIGRATION_ENDPOINT: ${{ secrets.MIGRATION_ENDPOINT }}
