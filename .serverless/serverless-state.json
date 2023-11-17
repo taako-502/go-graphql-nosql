@@ -236,7 +236,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/staggered-scheduler/prod/1700257390106-2023-11-17T21:43:10.106Z/staggered-scheduler.zip"
+                "S3Key": "serverless/staggered-scheduler/prod/1700260973659-2023-11-17T22:42:53.659Z/staggered-scheduler.zip"
               },
               "Handler": "bin/handler",
               "Runtime": "go1.x",
@@ -251,9 +251,8 @@
                   "DOMAIN": "staggered-scheduler.vercel.app",
                   "DYNAMO_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
                   "MIGRATION_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
-                  "AWS_SS_REGION": "ap-northeast-1",
-                  "AWS_SS_ACCESS_KEY_ID": "AKIA3XNP4TSF7K7QU3FI",
-                  "AWS_SS_SECRET_ACCESS_KEY": "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"
+                  "TODO_TABLE_NAME": "staggered-scheduler-prod-Todo-G7G7NVTHJTEF",
+                  "USER_TABLE_NAME": "staggered-scheduler-prod-User-16WKJ54F1S3A3"
                 }
               },
               "Role": {
@@ -267,14 +266,14 @@
               "HandlerLogGroup"
             ]
           },
-          "HandlerLambdaVersionIAa1HERP93U4AZCbOZrCtLLeCUMtNBkfIOSs7srUA": {
+          "HandlerLambdaVersionS72j9Kz6iPECllZnyPqSb74zHjN4Ltqvpyun4Acdr4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "HandlerLambdaFunction"
               },
-              "CodeSha256": "MvEF2E0RX0fawvaLzVsmqcUdeyUD+H6ZjS9GficeYFg="
+              "CodeSha256": "urXiXEmAq9JYvlvJ3yQ2duy6snYRuswT7bE6QpJDGDQ="
             }
           },
           "ApiGatewayRestApi": {
@@ -395,7 +394,7 @@
               "HandlerLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1700257380123": {
+          "ApiGatewayDeployment1700260963459": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -554,7 +553,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/staggered-scheduler/prod/1700257390106-2023-11-17T21:43:10.106Z/custom-resources.zip"
+                "S3Key": "serverless/staggered-scheduler/prod/1700260973659-2023-11-17T22:42:53.659Z/custom-resources.zip"
               },
               "FunctionName": "staggered-scheduler-prod-custom-resource-apigw-cw-role",
               "Handler": "api-gateway-cloud-watch-role/handler.handler",
@@ -651,7 +650,7 @@
           "HandlerLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "HandlerLambdaVersionIAa1HERP93U4AZCbOZrCtLLeCUMtNBkfIOSs7srUA"
+              "Ref": "HandlerLambdaVersionS72j9Kz6iPECllZnyPqSb74zHjN4Ltqvpyun4Acdr4"
             },
             "Export": {
               "Name": "sls-staggered-scheduler-prod-HandlerLambdaFunctionQualifiedArn"
@@ -811,9 +810,8 @@
           "DOMAIN": "staggered-scheduler.vercel.app",
           "DYNAMO_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
           "MIGRATION_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
-          "AWS_SS_REGION": "ap-northeast-1",
-          "AWS_SS_ACCESS_KEY_ID": "AKIA3XNP4TSF7K7QU3FI",
-          "AWS_SS_SECRET_ACCESS_KEY": "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"
+          "TODO_TABLE_NAME": "staggered-scheduler-prod-Todo-G7G7NVTHJTEF",
+          "USER_TABLE_NAME": "staggered-scheduler-prod-User-16WKJ54F1S3A3"
         },
         "name": "staggered-scheduler-prod-handler",
         "package": {},
@@ -821,7 +819,7 @@
         "timeout": 6,
         "runtime": "go1.x",
         "vpc": {},
-        "versionLogicalId": "HandlerLambdaVersionIAa1HERP93U4AZCbOZrCtLLeCUMtNBkfIOSs7srUA"
+        "versionLogicalId": "HandlerLambdaVersionS72j9Kz6iPECllZnyPqSb74zHjN4Ltqvpyun4Acdr4"
       }
     },
     "resources": {
@@ -902,7 +900,7 @@
         ],
         "artifactsS3KeyDirname": "serverless/staggered-scheduler/prod/code-artifacts",
         "artifact": "/Users/takao/GitHub/go-graphql-nosql/.serverless/staggered-scheduler.zip",
-        "artifactDirectoryName": "serverless/staggered-scheduler/prod/1700257390106-2023-11-17T21:43:10.106Z"
+        "artifactDirectoryName": "serverless/staggered-scheduler/prod/1700260973659-2023-11-17T22:42:53.659Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
@@ -916,7 +914,9 @@
         "GRAPHQL_SERVER_HOST": "https://staggered-scheduler.vercel.app/",
         "DOMAIN": "staggered-scheduler.vercel.app",
         "DYNAMO_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
-        "MIGRATION_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com"
+        "MIGRATION_ENDPOINT": "https://dynamodb.ap-northeast-1.amazonaws.com",
+        "TODO_TABLE_NAME": "staggered-scheduler-prod-Todo-G7G7NVTHJTEF",
+        "USER_TABLE_NAME": "staggered-scheduler-prod-User-16WKJ54F1S3A3"
       }
     },
     "app": "staggered-scheduler",
@@ -932,7 +932,7 @@
     "artifact": "/Users/takao/GitHub/go-graphql-nosql/.serverless/staggered-scheduler.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/staggered-scheduler/prod/1700257390106-2023-11-17T21:43:10.106Z",
+    "artifactDirectoryName": "serverless/staggered-scheduler/prod/1700260973659-2023-11-17T22:42:53.659Z",
     "artifact": "staggered-scheduler.zip"
   }
 }

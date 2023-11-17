@@ -10,8 +10,8 @@ func GetTodoTableName() string {
 }
 
 func GetUserTableName() string {
-	if os.Getenv("UserTableName") == "" {
-		return "Todo"
+	if os.Getenv("USER_TABLE_NAME") == "" {
+		return "User"
 	}
-	return os.Getenv("UserTableName")
+	return os.Getenv("USER_TABLE_NAME")
 }
