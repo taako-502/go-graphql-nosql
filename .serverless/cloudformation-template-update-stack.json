@@ -215,7 +215,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700169109315-2023-11-16T21:11:49.315Z/staggered-scheduler.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700211868691-2023-11-17T09:04:28.691Z/staggered-scheduler.zip"
         },
         "Handler": "bin/handler",
         "Runtime": "go1.x",
@@ -243,14 +243,14 @@
         "HandlerLogGroup"
       ]
     },
-    "HandlerLambdaVersionwEGvEB9blHTLDrmm6uDrnGrI1gERWA7tynGqrH2fZwY": {
+    "HandlerLambdaVersionJJRSujbqwvJSv4GzWlnLDdc7Jf3GiDceIBCfyvTQ": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "HandlerLambdaFunction"
         },
-        "CodeSha256": "dE351FtQqA60lsHq4qAbMBHttCIBdEsrsU4zaY0a5qU="
+        "CodeSha256": "NTfUgwHeG42HNP4MhNIJKJxJylsLFc17nC9zb46+sR4="
       }
     },
     "ApiGatewayRestApi": {
@@ -265,7 +265,7 @@
         "Policy": ""
       }
     },
-    "ApiGatewayResourceGraphql": {
+    "ApiGatewayResourceQuery": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "ParentId": {
@@ -274,13 +274,13 @@
             "RootResourceId"
           ]
         },
-        "PathPart": "graphql",
+        "PathPart": "query",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
       }
     },
-    "ApiGatewayMethodGraphqlOptions": {
+    "ApiGatewayMethodQueryOptions": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "AuthorizationType": "NONE",
@@ -318,20 +318,20 @@
           ]
         },
         "ResourceId": {
-          "Ref": "ApiGatewayResourceGraphql"
+          "Ref": "ApiGatewayResourceQuery"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
       }
     },
-    "ApiGatewayMethodGraphqlPost": {
+    "ApiGatewayMethodQueryPost": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
         "HttpMethod": "POST",
         "RequestParameters": {},
         "ResourceId": {
-          "Ref": "ApiGatewayResourceGraphql"
+          "Ref": "ApiGatewayResourceQuery"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -371,7 +371,7 @@
         "HandlerLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1700169098198": {
+    "ApiGatewayDeployment1700211858068": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -380,8 +380,8 @@
         "StageName": "prod"
       },
       "DependsOn": [
-        "ApiGatewayMethodGraphqlOptions",
-        "ApiGatewayMethodGraphqlPost"
+        "ApiGatewayMethodQueryOptions",
+        "ApiGatewayMethodQueryPost"
       ]
     },
     "HandlerLambdaPermissionApiGateway": {
@@ -530,7 +530,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/staggered-scheduler/prod/1700169109315-2023-11-16T21:11:49.315Z/custom-resources.zip"
+          "S3Key": "serverless/staggered-scheduler/prod/1700211868691-2023-11-17T09:04:28.691Z/custom-resources.zip"
         },
         "FunctionName": "staggered-scheduler-prod-custom-resource-apigw-cw-role",
         "Handler": "api-gateway-cloud-watch-role/handler.handler",
@@ -606,7 +606,7 @@
     "HandlerLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "HandlerLambdaVersionwEGvEB9blHTLDrmm6uDrnGrI1gERWA7tynGqrH2fZwY"
+        "Ref": "HandlerLambdaVersionJJRSujbqwvJSv4GzWlnLDdc7Jf3GiDceIBCfyvTQ"
       },
       "Export": {
         "Name": "sls-staggered-scheduler-prod-HandlerLambdaFunctionQualifiedArn"

@@ -73,7 +73,7 @@ func main() {
 		// 	frontendHost,
 		// 	// graphqlServerHost,
 		// },
-		AllowedOrigins: []string{"*"},
+		AllowedOrigins: []string{"https://staggered-scheduler.vercel.app"},
 		AllowedMethods: []string{
 			http.MethodGet,
 			http.MethodPost,
