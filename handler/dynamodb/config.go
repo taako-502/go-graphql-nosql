@@ -2,6 +2,7 @@ package ddbmanager
 
 import (
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -30,7 +31,7 @@ func getAwsConfig(endpoint string) *aws.Config {
 	token := os.Getenv("AWS_SESSION_TOKEN")
 	return &aws.Config{
 		Region:   aws.String(awsRegion),
-		Endpoint: aws.String(dynamoEndpoint),
+		Endpoint: aws.String(strings.TrimSpace(dynamoEndpoint)), // 前後のタブ文字や空白を削除
 		Credentials: credentials.NewStaticCredentials(
 			accessKeyID,
 			secretAccessKey,

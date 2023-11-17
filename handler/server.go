@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"fmt"
 	ddbmanager "go-graphql-nosql/handler/dynamodb"
@@ -11,18 +10,82 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/go-chi/chi"
-	"github.com/gorilla/websocket"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
-	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
-const defaultPort = "8080"
+var ginLambda *ginadapter.GinLambda
+
+// Defining the Graphql handler
+func graphqlHandler() gin.HandlerFunc {
+	// NewExecutableSchema and Config are in the generated.go file
+	// Resolver is in the resolver.go file
+	db := ddbmanager.New("")
+	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
+		DB: db,
+	}}))
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+// Defining the Playground handler
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL", "/query")
+
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
+// Handler is the main function called by AWS Lambda.
+func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// TODO: EchoAPIに書き換える
+	// If no name is provided in the HTTP request body, throw an error
+	if ginLambda == nil {
+		// stdout and stderr are sent to AWS CloudWatch Logs
+		log.Printf("Gin cold start")
+		r := gin.Default()
+
+		// cors
+		//FIXME: 環境変数から取得する
+		// frontendHost := os.Getenv("FRONTEND_HOST")
+		r.Use(cors.New(cors.Config{
+			AllowOrigins: []string{"https://staggered-scheduler.vercel.app"},
+			AllowMethods: []string{
+				http.MethodGet,
+				http.MethodPost,
+				http.MethodPatch,
+				http.MethodDelete,
+				http.MethodPut,
+				http.MethodOptions,
+			},
+			AllowHeaders:     []string{"*"},
+			AllowCredentials: true,
+		}))
+
+		// Setting up Gin
+		r.POST("/query", graphqlHandler())
+		r.GET("/playground", playgroundHandler())
+		r.GET("/ping", func(c *gin.Context) {
+			log.Println("Handler!!")
+			c.JSON(200, gin.H{
+				"message": "pong",
+			})
+		})
+
+		ginLambda = ginadapter.New(r)
+	}
+
+	return ginLambda.ProxyWithContext(ctx, req)
+}
 
 func main() {
 	// 環境変数読み込み
@@ -51,80 +114,5 @@ func main() {
 		return
 	}
 
-	db := ddbmanager.New(os.Getenv(""))
-	// DynamoDB
-	// サンプルプログラム（一時コメントアウト）
-	// if err := example.Example(db); err != nil {
-	// 	panic(err)
-	// }
-
-	// 環境変数から設定値を取得
-	graphqlServerPort := os.Getenv("GRAPHQL_SERVER_PORT")
-	if graphqlServerPort == "" {
-		graphqlServerPort = defaultPort
-	}
-
-	// GraphQLサーバーの設定
-	router := chi.NewRouter()
-	// frontendHost := os.Getenv("FRONTEND_HOST")
-	// graphqlServerHost := os.Getenv("GRAPHQL_SERVER_HOST")
-	router.Use(cors.New(cors.Options{
-		// AllowedOrigins: []string{
-		// 	frontendHost,
-		// 	// graphqlServerHost,
-		// },
-		AllowedOrigins: []string{"https://staggered-scheduler.vercel.app"},
-		AllowedMethods: []string{
-			http.MethodGet,
-			http.MethodPost,
-			http.MethodPatch,
-			http.MethodDelete,
-			http.MethodPut,
-			http.MethodOptions,
-		},
-		AllowedHeaders:   []string{"*"},
-		AllowCredentials: true,
-		Debug:            true,
-	}).Handler)
-	graphqlServer := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		DB: db,
-	}}))
-	domain := os.Getenv("DOMAIN")
-	graphqlServer.AddTransport(&transport.Websocket{
-		Upgrader: websocket.Upgrader{
-			CheckOrigin: func(r *http.Request) bool {
-				return r.Host == domain
-			},
-			ReadBufferSize:  1024,
-			WriteBufferSize: 1024,
-		},
-	})
-	graphqlServer.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
-		var extension map[string]interface{}
-		if errors.Is(err, graph.ErrUserNotFound) {
-			extension = map[string]interface{}{
-				"code":   "USER_NOT_FOUND",
-				"status": http.StatusBadRequest,
-			}
-		} else if errors.Is(err, graph.ErrCodeLoginFailed) {
-			extension = map[string]interface{}{
-				"code":   "LOGIN_FAILED",
-				"status": http.StatusBadRequest,
-			}
-		}
-		return &gqlerror.Error{
-			Message:    err.Error(),
-			Path:       graphql.GetPath(ctx),
-			Locations:  nil,
-			Extensions: extension,
-			Rule:       "",
-		}
-	})
-	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	router.Handle("/query", graphqlServer)
-
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", graphqlServerPort)
-	if err := http.ListenAndServe(":"+graphqlServerPort, router); err != nil {
-		panic(err)
-	}
+	lambda.Start(Handler)
 }

@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"errors"
+	"fmt"
 	"go-graphql-nosql/handler/graph/model"
 	"go-graphql-nosql/handler/utility"
 	"time"
@@ -16,6 +17,7 @@ import (
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*model.User, error) {
+	fmt.Println("ログイン処理を開始します。")
 	var users []*model.User
 	if err := r.DB.Table("User").Scan().Filter("'Username' = ?", username).All(&users); err != nil {
 		return nil, errors.New("failed to get user")
