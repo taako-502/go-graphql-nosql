@@ -89,6 +89,7 @@ func main() {
 	migrate := flag.Bool("migrate", false, "Run database migrations")
 	flag.Parse()
 
+	// ローカル環境で打鍵するときに使う
 	// go run handler/server.go -migrate
 	if *migrate {
 		// DynamoDBの初期化
