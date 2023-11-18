@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  echo:
+  echo: # TODO: いまはGinになっているが、echoに変更する
     container_name: graphql-server
     build: .
     ports:
