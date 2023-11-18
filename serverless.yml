@@ -35,22 +35,31 @@ functions:
       DOMAIN: ${param:DOMAIN}
       DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT}
       MIGRATION_ENDPOINT: ${param:MIGRATION_ENDPOINT}
-      # Lambdaで予約されている環境変数のため、コメントアウト
-      # AWS_REGION: ${env:AWS_REGION}
-      # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      # AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      # AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}
+      TODO_TABLE_NAME: ${param:TODO_TABLE_NAME}
+      USER_TABLE_NAME: ${param:USER_TABLE_NAME}
 
 resources:
   Resources:
-    UsersTable:
+    User:
       Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
-          - AttributeName: id
+          - AttributeName: ID
             AttributeType: S
         KeySchema:
-          - AttributeName: id
+          - AttributeName: ID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    Todo:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -72,3 +81,5 @@ outputs:
   DOMAIN: ${param:DOMAIN}
   DYNAMO_ENDPOINT: ${param:DYNAMO_ENDPOINT}
   MIGRATION_ENDPOINT: ${param:MIGRATION_ENDPOINT}
+  TODO_TABLE_NAME: ${param:TODO_TABLE_NAME}
+  USER_TABLE_NAME: ${param:USER_TABLE_NAME}
