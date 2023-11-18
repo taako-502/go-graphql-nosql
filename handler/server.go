@@ -55,10 +55,9 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		r := gin.Default()
 
 		// cors
-		//FIXME: 環境変数から取得する
-		// frontendHost := os.Getenv("FRONTEND_HOST")
+		frontendHost := os.Getenv("FRONTEND_HOST")
 		r.Use(cors.New(cors.Config{
-			AllowOrigins: []string{"https://staggered-scheduler.vercel.app"},
+			AllowOrigins: []string{frontendHost},
 			AllowMethods: []string{
 				http.MethodGet,
 				http.MethodPost,
@@ -73,13 +72,6 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 
 		// Setting up Gin
 		r.POST("/query", graphqlHandler())
-		r.GET("/playground", playgroundHandler())
-		r.GET("/ping", func(c *gin.Context) {
-			log.Println("Handler!!")
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
 
 		ginLambda = ginadapter.New(r)
 	}
