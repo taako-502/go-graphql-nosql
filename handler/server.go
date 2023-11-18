@@ -43,22 +43,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		// stdout and stderr are sent to AWS CloudWatch Logs
 		log.Printf("Gin cold start")
 		r := gin.Default()
-
-		// cors
-		frontendHost := os.Getenv("FRONTEND_HOST")
-		r.Use(cors.New(cors.Config{
-			AllowOrigins: []string{frontendHost},
-			AllowMethods: []string{
-				http.MethodGet,
-				http.MethodPost,
-				http.MethodPatch,
-				http.MethodDelete,
-				http.MethodPut,
-				http.MethodOptions,
-			},
-			AllowHeaders:     []string{"*"},
-			AllowCredentials: true,
-		}))
+		r.Use(settingCors())
 
 		// Setting up Gin
 		r.POST("/query", graphqlHandler())
@@ -98,4 +83,28 @@ func main() {
 	}
 
 	lambda.Start(Handler)
+}
+
+// CORS
+func settingCors() gin.HandlerFunc {
+	frontendHost1 := os.Getenv("FRONTEND_HOST_1")
+	frontendHost2 := os.Getenv("FRONTEND_HOST_2")
+	frontendHost3 := os.Getenv("FRONTEND_HOST_3")
+	return cors.New(cors.Config{
+		AllowOrigins: []string{
+			frontendHost1,
+			frontendHost2,
+			frontendHost3,
+		},
+		AllowMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPatch,
+			http.MethodDelete,
+			http.MethodPut,
+			http.MethodOptions,
+		},
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: true,
+	})
 }
