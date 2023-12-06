@@ -4,9 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"go-graphql-nosql/handler/config"
 	ddbmanager "go-graphql-nosql/handler/dynamodb"
 	"go-graphql-nosql/handler/graph"
+	"go-graphql-nosql/handler/internal/config"
+	"go-graphql-nosql/handler/internal/localserver"
 	"log"
 	"os"
 
@@ -50,7 +51,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		r.Use(config.SettingCors(hosts))
 
 		// Setting up Gin
-		db := ddbmanager.New("")
+		db := ddbmanager.New()
 		r.POST("/query", graphqlHandler(db))
 
 		ginLambda = ginadapter.New(r)
@@ -73,8 +74,7 @@ func main() {
 	// go run handler/server.go -migrate
 	if *migrate {
 		// DynamoDBの初期化
-		endpoint := os.Getenv("MIGRATION_ENDPOINT")
-		db := ddbmanager.New(endpoint)
+		db := ddbmanager.New()
 		manager := ddbmanager.DDBMnager{DB: db}
 
 		// マイグレーション実行
@@ -87,5 +87,11 @@ func main() {
 		return
 	}
 
-	lambda.Start(Handler)
+	if os.Getenv("ENVIRONMENT") == "local" {
+		// ローカル環境
+		localserver.StartLocalServer()
+	} else {
+		// AWS Lambda
+		lambda.Start(Handler)
+	}
 }
