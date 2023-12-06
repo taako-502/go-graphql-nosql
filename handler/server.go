@@ -4,28 +4,27 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"go-graphql-nosql/handler/config"
 	ddbmanager "go-graphql-nosql/handler/dynamodb"
 	"go-graphql-nosql/handler/graph"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/guregu/dynamo"
 	"github.com/joho/godotenv"
 )
 
 var ginLambda *ginadapter.GinLambda
 
 // Defining the Graphql handler
-func graphqlHandler() gin.HandlerFunc {
+func graphqlHandler(db *dynamo.DB) gin.HandlerFunc {
 	// NewExecutableSchema and Config are in the generated.go file
 	// Resolver is in the resolver.go file
-	db := ddbmanager.New("")
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
 		DB: db,
 	}}))
@@ -43,10 +42,16 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		// stdout and stderr are sent to AWS CloudWatch Logs
 		log.Printf("Gin cold start")
 		r := gin.Default()
-		r.Use(settingCors())
+		hosts := []string{
+			os.Getenv("FRONTEND_HOST_1"),
+			os.Getenv("FRONTEND_HOST_2"),
+			os.Getenv("FRONTEND_HOST_3"),
+		}
+		r.Use(config.SettingCors(hosts))
 
 		// Setting up Gin
-		r.POST("/query", graphqlHandler())
+		db := ddbmanager.New("")
+		r.POST("/query", graphqlHandler(db))
 
 		ginLambda = ginadapter.New(r)
 	}
@@ -83,28 +88,4 @@ func main() {
 	}
 
 	lambda.Start(Handler)
-}
-
-// CORS
-func settingCors() gin.HandlerFunc {
-	frontendHost1 := os.Getenv("FRONTEND_HOST_1")
-	frontendHost2 := os.Getenv("FRONTEND_HOST_2")
-	frontendHost3 := os.Getenv("FRONTEND_HOST_3")
-	return cors.New(cors.Config{
-		AllowOrigins: []string{
-			frontendHost1,
-			frontendHost2,
-			frontendHost3,
-		},
-		AllowMethods: []string{
-			http.MethodGet,
-			http.MethodPost,
-			http.MethodPatch,
-			http.MethodDelete,
-			http.MethodPut,
-			http.MethodOptions,
-		},
-		AllowHeaders:     []string{"*"},
-		AllowCredentials: true,
-	})
 }

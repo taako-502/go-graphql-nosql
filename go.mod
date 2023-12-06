@@ -56,6 +56,7 @@ require (
 	github.com/gin-contrib/cors v1.4.0
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/joho/godotenv v1.5.1
+	github.com/pkg/errors v0.9.1
 	golang.org/x/crypto v0.14.0
 	golang.org/x/sync v0.4.0 // indirect
 )
