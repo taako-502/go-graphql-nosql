@@ -3,7 +3,7 @@ module go-graphql-nosql
 go 1.21.3
 
 require (
-	github.com/99designs/gqlgen v0.17.40
+	github.com/99designs/gqlgen v0.17.41
 	github.com/aws/aws-sdk-go v1.46.6
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.4.0
