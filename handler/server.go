@@ -51,7 +51,7 @@ func Handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.API
 		r.Use(config.SettingCors(hosts))
 
 		// Setting up Gin
-		db := ddbmanager.New()
+		db := ddbmanager.New("")
 		r.POST("/query", graphqlHandler(db))
 
 		ginLambda = ginadapter.New(r)
@@ -73,8 +73,8 @@ func main() {
 	// ローカル環境で打鍵するときに使う
 	// go run handler/server.go -migrate
 	if *migrate {
-		// DynamoDBの初期化
-		db := ddbmanager.New()
+		endpoint := os.Getenv("MIGRATION_ENDPOINT")
+		db := ddbmanager.New(endpoint)
 		manager := ddbmanager.DDBMnager{DB: db}
 
 		// マイグレーション実行
@@ -89,7 +89,9 @@ func main() {
 
 	if os.Getenv("ENVIRONMENT") == "local" {
 		// ローカル環境
-		localserver.StartLocalServer()
+		endpoint := os.Getenv("DYNAMO_ENDPOINT")
+		db := ddbmanager.New(endpoint)
+		localserver.StartLocalServer(db)
 	} else {
 		// AWS Lambda
 		lambda.Start(Handler)

@@ -10,10 +10,10 @@ import (
 )
 
 // 引数はオプショナルにすること
-func New() *dynamo.DB {
+func New(endpoint string) *dynamo.DB {
 	var sess *session.Session
 	if os.Getenv("ENVIRONMENT") == "local" {
-		sess = session.Must(session.NewSession(getAwsConfig()))
+		sess = session.Must(session.NewSession(getAwsConfig(endpoint)))
 	} else {
 		sess = session.Must(session.NewSession())
 	}
@@ -22,14 +22,10 @@ func New() *dynamo.DB {
 	return dynamo.New(sess)
 }
 
-func getAwsConfig() *aws.Config {
-	dynamoEndpoint := os.Getenv("MIGRATION_ENDPOINT")
-	if dynamoEndpoint == "" {
-		dynamoEndpoint = os.Getenv("DYNAMO_ENDPOINT")
-	}
+func getAwsConfig(endpoint string) *aws.Config {
 	return &aws.Config{
 		Region:   aws.String("ap-northeast-1"),
-		Endpoint: aws.String(dynamoEndpoint),
+		Endpoint: aws.String(endpoint),
 		Credentials: credentials.NewStaticCredentials(
 			"dammy",
 			"dammy",

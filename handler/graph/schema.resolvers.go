@@ -115,7 +115,6 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	if err := r.DB.Table(GetUserTableName()).Scan().Filter("'Username' = ?", input.Username).All(&users); err != nil {
 		return nil, pkgerrors.Wrap(err, "dynamo.DB.Table.Scan.Filter.All")
 	}
-
 	if len(users) > 0 {
 		return nil, pkgerrors.Wrap(errors.New("user already exists"), "dynamo.DB.Table.Scan.Filter.All")
 	}
@@ -134,6 +133,9 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 		UpdatedAt:    currentTime,
 	}
 
+	fmt.Println(GetUserTableName())
+	fmt.Println(user.Username)
+	fmt.Println(user.PasswordHash)
 	if err := r.DB.Table(GetUserTableName()).Put(user).Run(); err != nil {
 		return nil, pkgerrors.Wrap(err, "dynamo.DB.Table.Put")
 	}
