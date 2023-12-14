@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	pkgerrors "github.com/pkg/errors"
 )
 
 // Login is the resolver for the login field.
@@ -111,15 +112,17 @@ func (r *mutationResolver) DeleteTodoByUserID(ctx context.Context, userID string
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	var users []*model.User
-	r.DB.Table(GetUserTableName()).Scan().Filter("'Username' = ?", input.Username).All(&users)
+	if err := r.DB.Table(GetUserTableName()).Scan().Filter("'Username' = ?", input.Username).All(&users); err != nil {
+		return nil, pkgerrors.Wrap(err, "dynamo.DB.Table.Scan.Filter.All")
+	}
 	if len(users) > 0 {
-		return nil, errors.New("user already exists")
+		return nil, pkgerrors.Wrap(errors.New("user already exists"), "dynamo.DB.Table.Scan.Filter.All")
 	}
 
 	currentTime := utility.FormatDateForDynamoDB(time.Now())
 	passwordHash, err := utility.HashPassword(input.Password)
 	if err != nil {
-		return nil, err
+		return nil, pkgerrors.Wrap(err, "utility.HashPassword")
 	}
 	uuid := uuid.NewString()
 	user := &model.User{
@@ -130,8 +133,11 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 		UpdatedAt:    currentTime,
 	}
 
+	fmt.Println(GetUserTableName())
+	fmt.Println(user.Username)
+	fmt.Println(user.PasswordHash)
 	if err := r.DB.Table(GetUserTableName()).Put(user).Run(); err != nil {
-		return nil, err
+		return nil, pkgerrors.Wrap(err, "dynamo.DB.Table.Put")
 	}
 
 	return user, nil

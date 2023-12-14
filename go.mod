@@ -3,7 +3,7 @@ module go-graphql-nosql
 go 1.21.3
 
 require (
-	github.com/99designs/gqlgen v0.17.40
+	github.com/99designs/gqlgen v0.17.41
 	github.com/aws/aws-sdk-go v1.46.6
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.4.0
@@ -54,8 +54,11 @@ require (
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.0
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/gin-contrib/cors v1.4.0
+	github.com/go-chi/chi v1.5.5
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/joho/godotenv v1.5.1
+	github.com/pkg/errors v0.9.1
+	github.com/rs/cors v1.10.1
 	golang.org/x/crypto v0.14.0
 	golang.org/x/sync v0.4.0 // indirect
 )
