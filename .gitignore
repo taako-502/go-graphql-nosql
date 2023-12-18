@@ -28,3 +28,5 @@ dynamodb/data/
 tmp/
 bin/handler
 .aws
+
+.serverless/
