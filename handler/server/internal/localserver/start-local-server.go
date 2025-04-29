@@ -2,7 +2,7 @@ package localserver
 
 import (
 	"go-graphql-nosql/handler/graph"
-	"go-graphql-nosql/handler/internal/config"
+	"go-graphql-nosql/handler/server/internal/config"
 	"log"
 	"net/http"
 	"os"
