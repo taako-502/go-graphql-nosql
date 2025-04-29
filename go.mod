@@ -60,4 +60,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-tool github.com/99designs/gqlgen
+tool (
+	github.com/99designs/gqlgen
+	github.com/99designs/gqlgen/graphql/introspection
+)
