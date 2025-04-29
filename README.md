@@ -17,6 +17,12 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
+初回実行時は以下のコマンドでデータベースのマイグレーションを実行してください。
+
+```zsh
+$ make migrate
+```
+
 ## Deploy
 
 ```zsh
