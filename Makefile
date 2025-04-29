@@ -4,3 +4,6 @@ build:
 
 gqlgen:
 	go run github.com/99designs/gqlgen generate
+
+migrate:
+	go run handler/server/server.go -migrate
