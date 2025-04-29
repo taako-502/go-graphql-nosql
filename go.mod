@@ -1,4 +1,4 @@
-module go-graphql-nosql
+module github.com/taako-502/go-graphql-nosql
 
 go 1.24
 
