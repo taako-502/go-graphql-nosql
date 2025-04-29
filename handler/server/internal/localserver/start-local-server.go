@@ -10,7 +10,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
-	"github.com/guregu/dynamo"
+	"github.com/guregu/dynamo/v2"
 )
 
 func StartLocalServer(db *dynamo.DB) {

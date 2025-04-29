@@ -16,7 +16,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
-	"github.com/guregu/dynamo"
+	"github.com/guregu/dynamo/v2"
 	"github.com/joho/godotenv"
 )
 
