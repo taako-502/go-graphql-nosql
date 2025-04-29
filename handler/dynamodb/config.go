@@ -1,35 +1,37 @@
 package ddbmanager
 
 import (
-	"os"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/guregu/dynamo/v2"
 )
 
 // 引数はオプショナルにすること
 func New(endpoint string) *dynamo.DB {
-	var sess *session.Session
-	if os.Getenv("ENVIRONMENT") == "local" {
-		sess = session.Must(session.NewSession(getAwsConfig(endpoint)))
-	} else {
-		sess = session.Must(session.NewSession())
-	}
+	// NOTE: 一時的にコメントアウト
+	return nil
 
-	// DynamoDBサービスクライアントを作成
-	return dynamo.New(sess)
+	// var sess *session.Session
+	// if os.Getenv("ENVIRONMENT") == "local" {
+	// 	sess = session.Must(session.NewSession(getAwsConfig(endpoint)))
+	// } else {
+	// 	sess = session.Must(session.NewSession())
+	// }
+
+	// // DynamoDBサービスクライアントを作成
+	// return dynamo.New(sess)
 }
 
 func getAwsConfig(endpoint string) *aws.Config {
-	return &aws.Config{
-		Region:   aws.String("ap-northeast-1"),
-		Endpoint: aws.String(endpoint),
-		Credentials: credentials.NewStaticCredentials(
-			"dammy",
-			"dammy",
-			"dammy",
-		),
-	}
+	// NOTE: 一時的にコメントアウト
+	return nil
+
+	// return &aws.Config{
+	// 	Region:   aws.String("ap-northeast-1"),
+	// 	Endpoint: aws.String(endpoint),
+	// 	Credentials: credentials.NewStaticCredentials(
+	// 		"dammy",
+	// 		"dammy",
+	// 		"dammy",
+	// 	),
+	// }
 }

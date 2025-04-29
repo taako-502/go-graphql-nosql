@@ -7,8 +7,6 @@ import (
 
 	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
 
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/guregu/dynamo/v2"
 )
 
@@ -37,9 +35,11 @@ func (d *DDBMnager) Migration(ctx context.Context) error {
 
 func (d *DDBMnager) TableExists(ctx context.Context, tableName string) (bool, error) {
 	if _, err := d.DB.Table(tableName).Describe().Run(ctx); err != nil {
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == dynamodb.ErrCodeResourceNotFoundException {
-			return false, nil
-		}
+		// FIXME: テーブルが存在しない場合のエラーを確認する
+		// var codeResourceNotFoundException = dynamodb.ErrCodeResourceNotFoundException
+		// if errors.As(err, &codeResourceNotFoundException) {
+		// 	return false, nil
+		// }
 		return false, fmt.Errorf("DDBMnager.TableExists: %w", err)
 	}
 	return true, nil
