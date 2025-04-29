@@ -8,9 +8,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-graphql-nosql/handler/graph/model"
-	"go-graphql-nosql/handler/utility"
 	"time"
+
+	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
+	"github.com/taako-502/go-graphql-nosql/handler/utility"
 
 	"github.com/google/uuid"
 )

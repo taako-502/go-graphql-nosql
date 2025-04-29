@@ -4,12 +4,14 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	ddbmanager "go-graphql-nosql/handler/dynamodb"
-	"go-graphql-nosql/handler/graph"
-	"go-graphql-nosql/handler/server/internal/config"
-	"go-graphql-nosql/handler/server/internal/localserver"
 	"log"
 	"os"
+
+	ddbmanager "github.com/taako-502/go-graphql-nosql/handler/dynamodb"
+
+	"github.com/taako-502/go-graphql-nosql/handler/graph"
+	"github.com/taako-502/go-graphql-nosql/handler/server/internal/config"
+	"github.com/taako-502/go-graphql-nosql/handler/server/internal/localserver"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/aws/aws-lambda-go/events"

@@ -1,11 +1,13 @@
 package localserver
 
 import (
-	"go-graphql-nosql/handler/graph"
-	"go-graphql-nosql/handler/server/internal/config"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/taako-502/go-graphql-nosql/handler/server/internal/config"
+
+	"github.com/taako-502/go-graphql-nosql/handler/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

@@ -2,8 +2,9 @@ package ddbmanager
 
 import (
 	"fmt"
-	"go-graphql-nosql/handler/graph/model"
 	"log"
+
+	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"

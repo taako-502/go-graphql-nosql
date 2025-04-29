@@ -8,7 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"go-graphql-nosql/handler/graph/model"
+	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"
