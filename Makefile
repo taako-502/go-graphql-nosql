@@ -1,3 +1,9 @@
 build:
 	go mod tidy
-	env GOOS=linux go build -ldflags="-s -w" -o bin/handler handler/server.go
+	env GOOS=linux go build -ldflags="-s -w" -o bin/handler handler/server/server.go
+
+gqlgen:
+	go run github.com/99designs/gqlgen generate
+
+migrate:
+	go run handler/server/server.go -migrate

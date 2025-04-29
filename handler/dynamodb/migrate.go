@@ -1,13 +1,13 @@
 package ddbmanager
 
 import (
+	"fmt"
 	"go-graphql-nosql/handler/graph/model"
 	"log"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/guregu/dynamo"
-	"github.com/pkg/errors"
 )
 
 type DDBMnager struct {
@@ -19,7 +19,7 @@ func (d *DDBMnager) Migration() error {
 	for _, table := range tables {
 		exist, err := d.TableExists(table)
 		if err != nil {
-			return errors.Wrap(err, "DDBMnager.TableExists")
+			return fmt.Errorf("DDBMnager.TableExists: %w", err)
 		}
 		if exist {
 			log.Printf("Table %s already exists", table)
@@ -27,7 +27,7 @@ func (d *DDBMnager) Migration() error {
 		}
 
 		if err := d.TableCreate(table); err != nil {
-			return errors.Wrap(err, "DDBMnager.TableCreate")
+			return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 		}
 	}
 	return nil
@@ -38,7 +38,7 @@ func (d *DDBMnager) TableExists(tableName string) (bool, error) {
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == dynamodb.ErrCodeResourceNotFoundException {
 			return false, nil
 		}
-		return false, errors.Wrap(err, "DDBMnager.Table.Describe")
+		return false, fmt.Errorf("DDBMnager.TableExists: %w", err)
 	}
 	return true, nil
 }
@@ -46,7 +46,7 @@ func (d *DDBMnager) TableExists(tableName string) (bool, error) {
 func (d *DDBMnager) TableCreate(tableName string) error {
 	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(); err != nil {
 		log.Fatalf("Unable to create table: %s", err)
-		return errors.Wrap(err, "dynamo.DB.CreateTable")
+		return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 	}
 	return nil
 }

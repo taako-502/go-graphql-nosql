@@ -1,4 +1,4 @@
-FROM golang:1.21.3
+FROM golang:1.24
 
 # モジュールを使用して依存関係を管理
 ENV GO111MODULE=on
@@ -19,7 +19,7 @@ COPY .air.toml ./
 COPY .env ./
 
 # airのインストール
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/air-verse/air@latest
 
 # ポートを開放
 EXPOSE 8080

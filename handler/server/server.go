@@ -6,8 +6,8 @@ import (
 	"fmt"
 	ddbmanager "go-graphql-nosql/handler/dynamodb"
 	"go-graphql-nosql/handler/graph"
-	"go-graphql-nosql/handler/internal/config"
-	"go-graphql-nosql/handler/internal/localserver"
+	"go-graphql-nosql/handler/server/internal/config"
+	"go-graphql-nosql/handler/server/internal/localserver"
 	"log"
 	"os"
 
