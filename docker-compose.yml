@@ -1,6 +1,6 @@
 services:
-  echo: # TODO: いまはGinになっているが、echoに変更する
-    container_name: graphql-server
+  graphql:
+    container_name: go_graphql_nosql_graphql
     build: .
     ports:
       - "8080:8080"
@@ -10,8 +10,8 @@ services:
     working_dir: /app
     command: sh -c 'go mod tidy && air'
 
-  dynamodb-local:
-    container_name: dynamodb-local
+  dynamodb:
+    container_name: go_graphql_nosql_dynamodb
     image: "amazon/dynamodb-local:latest"
     ports:
       - "8000:8000"
@@ -20,12 +20,12 @@ services:
       - "./docker/dynamodb:/home/dynamodblocal/data"
     working_dir: /home/dynamodblocal
 
-  dynamodb-admin:
-    container_name: dynamodb-admin
+  dynamodb_admin:
+    container_name: go_graphql_nosql_dynamodb_admin
     image: aaronshaf/dynamodb-admin:latest
     environment:
-      - DYNAMO_ENDPOINT=dynamodb-local:8000
+      - DYNAMO_ENDPOINT=go_graphql_nosql_dynamodb:8000
     ports:
       - 8001:8001
     depends_on:
-      - dynamodb-local
+      - dynamodb
