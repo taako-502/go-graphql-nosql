@@ -1,37 +1,20 @@
 package ddbmanager
 
 import (
-	"github.com/aws/aws-sdk-go-v2/aws"
+	"context"
+
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/guregu/dynamo/v2"
 )
 
 // 引数はオプショナルにすること
-func New(endpoint string) *dynamo.DB {
+func New(ctx context.Context, region string) (*dynamo.DB, error) {
 	// NOTE: 一時的にコメントアウト
-	return nil
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
+	if err != nil {
+		return nil, err
+	}
 
-	// var sess *session.Session
-	// if os.Getenv("ENVIRONMENT") == "local" {
-	// 	sess = session.Must(session.NewSession(getAwsConfig(endpoint)))
-	// } else {
-	// 	sess = session.Must(session.NewSession())
-	// }
-
-	// // DynamoDBサービスクライアントを作成
-	// return dynamo.New(sess)
-}
-
-func getAwsConfig(endpoint string) *aws.Config {
-	// NOTE: 一時的にコメントアウト
-	return nil
-
-	// return &aws.Config{
-	// 	Region:   aws.String("ap-northeast-1"),
-	// 	Endpoint: aws.String(endpoint),
-	// 	Credentials: credentials.NewStaticCredentials(
-	// 		"dammy",
-	// 		"dammy",
-	// 		"dammy",
-	// 	),
-	// }
+	// DynamoDBサービスクライアントを作成
+	return dynamo.New(cfg), nil
 }
