@@ -1,6 +1,7 @@
 package ddbmanager
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -15,10 +16,10 @@ type DDBMnager struct {
 	DB *dynamo.DB
 }
 
-func (d *DDBMnager) Migration() error {
+func (d *DDBMnager) Migration(ctx context.Context) error {
 	tables := []string{"Todo", "User"}
 	for _, table := range tables {
-		exist, err := d.TableExists(table)
+		exist, err := d.TableExists(ctx, table)
 		if err != nil {
 			return fmt.Errorf("DDBMnager.TableExists: %w", err)
 		}
@@ -27,15 +28,15 @@ func (d *DDBMnager) Migration() error {
 			continue
 		}
 
-		if err := d.TableCreate(table); err != nil {
+		if err := d.TableCreate(ctx, table); err != nil {
 			return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 		}
 	}
 	return nil
 }
 
-func (d *DDBMnager) TableExists(tableName string) (bool, error) {
-	if _, err := d.DB.Table(tableName).Describe().Run(); err != nil {
+func (d *DDBMnager) TableExists(ctx context.Context, tableName string) (bool, error) {
+	if _, err := d.DB.Table(tableName).Describe().Run(ctx); err != nil {
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == dynamodb.ErrCodeResourceNotFoundException {
 			return false, nil
 		}
@@ -44,8 +45,8 @@ func (d *DDBMnager) TableExists(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (d *DDBMnager) TableCreate(tableName string) error {
-	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(); err != nil {
+func (d *DDBMnager) TableCreate(ctx context.Context, tableName string) error {
+	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(ctx); err != nil {
 		log.Fatalf("Unable to create table: %s", err)
 		return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 	}
