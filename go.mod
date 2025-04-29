@@ -3,7 +3,7 @@ module go-graphql-nosql
 go 1.24
 
 require (
-	github.com/99designs/gqlgen v0.17.72
+	github.com/99designs/gqlgen v0.17.70
 	github.com/aws/aws-lambda-go v1.48.0
 	github.com/aws/aws-sdk-go v1.55.7
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
