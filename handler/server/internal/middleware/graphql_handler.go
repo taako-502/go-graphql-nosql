@@ -11,7 +11,6 @@ import (
 )
 
 func GraphqlHandler(DB *dynamo.DB, region string) http.HandlerFunc {
-	// FIXME: これは古い書き方なので、新しい書き方Newに変更する
 	c := graph.Config{Resolvers: &graph.Resolver{
 		DB: DB,
 	}}
