@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"slices"
 )
 
 func CORS(next http.Handler, origins []string) http.Handler {

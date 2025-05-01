@@ -12,16 +12,14 @@ import (
 )
 
 func (s *server) LocalServer() error {
-	playgroundHandler := playground.Handler("GraphQL playground", "/query")
-	mux := http.NewServeMux()
-	mux.Handle("/", playgroundHandler)
-
 	ctx := context.Background()
 	DB, err := ddbmanager.New(ctx, s.awsConfig.region)
 	if err != nil {
 		return err
 	}
 
+	mux := http.NewServeMux()
+	mux.Handle("GET /", playground.Handler("GraphQL playground", "/query"))
 	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region))
 	handlerWithCORS := middleware.CORS(mux, s.corsAllowedOrigins)
 
