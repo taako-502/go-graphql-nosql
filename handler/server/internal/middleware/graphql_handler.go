@@ -12,7 +12,7 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
-func GraphqlHandler(db *dynamo.DB, region, bucket string) http.HandlerFunc {
+func GraphqlHandler(db *dynamo.DB, region string) http.HandlerFunc {
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{
 		Resolvers: &graph.Resolver{},
 	}))

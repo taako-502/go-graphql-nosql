@@ -22,7 +22,7 @@ func (s *server) LocalServer() error {
 		return err
 	}
 
-	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region, s.awsConfig.s3Bucket))
+	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region))
 	handlerWithCORS := middleware.CORS(mux, s.corsAllowedOrigins)
 
 	graphqlServerPort := s.graphqlServerPort
