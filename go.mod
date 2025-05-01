@@ -5,7 +5,9 @@ go 1.24
 require (
 	github.com/99designs/gqlgen v0.17.70
 	github.com/aws/aws-lambda-go v1.48.0
+	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
+	github.com/aws/aws-sdk-go-v2/credentials v1.17.67
 	github.com/awslabs/aws-lambda-go-api-proxy v0.16.2
 	github.com/google/uuid v1.6.0
 	github.com/guregu/dynamo/v2 v2.3.0
@@ -16,8 +18,6 @@ require (
 
 require (
 	github.com/agnivade/levenshtein v1.2.1 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.36.3 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.17.67 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.14.11 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.30 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.34 // indirect
