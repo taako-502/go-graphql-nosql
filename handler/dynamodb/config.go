@@ -25,7 +25,7 @@ func New(ctx context.Context, region string) (*dynamo.DB, error) {
 }
 
 // amazon/dynamodb-local に接続する
-func NewByLocalOrCI(ctx context.Context, endpoint string) (*dynamo.DB, error) {
+func NewForLocal(ctx context.Context, endpoint string) (*dynamo.DB, error) {
 	conf, err := getAwsConfigForDummy(ctx, endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("GetAwsConfigForDummy(%s), %v", endpoint, err)

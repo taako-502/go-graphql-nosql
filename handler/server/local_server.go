@@ -13,7 +13,7 @@ import (
 
 func (s *server) LocalServer() error {
 	ctx := context.Background()
-	DB, err := ddbmanager.NewByLocalOrCI(ctx, s.dynamoEndpoint)
+	DB, err := ddbmanager.NewForLocal(ctx, s.dynamoEndpoint)
 	if err != nil {
 		return err
 	}
