@@ -5,6 +5,10 @@ WORKDIR /graphql
 COPY go.mod go.sum ./
 COPY . .
 
+RUN go build -tags lambda.norpc -o main ./cmd/graphql/main.go
+
+FROM public.ecr.aws/lambda/provided:al2023
+
 ARG ENVIRONMENT
 ARG DYNAMO_REGION
 ARG CORS_ALLOWED_ORIGINS
@@ -12,9 +16,6 @@ ARG CORS_ALLOWED_ORIGINS
 ENV ENVIRONMENT=${ENVIRONMENT} \
     DYNAMO_REGION=${DYNAMO_REGION} \
     CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
-
-RUN go build -tags lambda.norpc -o main ./cmd/graphql/main.go
-FROM public.ecr.aws/lambda/provided:al2023
 
 COPY --from=build /graphql/main ./main
 
