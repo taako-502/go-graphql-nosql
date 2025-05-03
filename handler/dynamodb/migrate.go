@@ -1,24 +1,25 @@
 package ddbmanager
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"log"
 
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
 
-	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/guregu/dynamo"
+	"github.com/guregu/dynamo/v2"
 )
 
 type DDBMnager struct {
 	DB *dynamo.DB
 }
 
-func (d *DDBMnager) Migration() error {
+func (d *DDBMnager) Migration(ctx context.Context) error {
 	tables := []string{"Todo", "User"}
 	for _, table := range tables {
-		exist, err := d.TableExists(table)
+		exist, err := d.TableExists(ctx, table)
 		if err != nil {
 			return fmt.Errorf("DDBMnager.TableExists: %w", err)
 		}
@@ -27,16 +28,17 @@ func (d *DDBMnager) Migration() error {
 			continue
 		}
 
-		if err := d.TableCreate(table); err != nil {
+		if err := d.TableCreate(ctx, table); err != nil {
 			return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 		}
 	}
 	return nil
 }
 
-func (d *DDBMnager) TableExists(tableName string) (bool, error) {
-	if _, err := d.DB.Table(tableName).Describe().Run(); err != nil {
-		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == dynamodb.ErrCodeResourceNotFoundException {
+func (d *DDBMnager) TableExists(ctx context.Context, tableName string) (bool, error) {
+	if _, err := d.DB.Table(tableName).Describe().Run(ctx); err != nil {
+		var notFound *types.ResourceNotFoundException
+		if errors.As(err, &notFound) {
 			return false, nil
 		}
 		return false, fmt.Errorf("DDBMnager.TableExists: %w", err)
@@ -44,9 +46,8 @@ func (d *DDBMnager) TableExists(tableName string) (bool, error) {
 	return true, nil
 }
 
-func (d *DDBMnager) TableCreate(tableName string) error {
-	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(); err != nil {
-		log.Fatalf("Unable to create table: %s", err)
+func (d *DDBMnager) TableCreate(ctx context.Context, tableName string) error {
+	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(ctx); err != nil {
 		return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 	}
 	return nil

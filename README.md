@@ -32,7 +32,7 @@ $ make build && serverless deploy
 ## Build
 
 ```zsh
-$ go build -o bin/handler handler/server/server.go
+$ go build -o bin/handler cmd/graphql/main.go
 ```
 
 ## Frontend
