@@ -48,7 +48,6 @@ func (d *DDBMnager) TableExists(ctx context.Context, tableName string) (bool, er
 
 func (d *DDBMnager) TableCreate(ctx context.Context, tableName string) error {
 	if err := d.DB.CreateTable(tableName, model.Todo{}).Run(ctx); err != nil {
-		log.Fatalf("Unable to create table: %s", err)
 		return fmt.Errorf("DDBMnager.TableCreate: %w", err)
 	}
 	return nil
