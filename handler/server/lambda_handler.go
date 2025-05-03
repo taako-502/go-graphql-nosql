@@ -6,7 +6,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
-	ddbmanager "github.com/taako-502/go-graphql-nosql/handler/dynamodb"
+	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
 	"github.com/taako-502/go-graphql-nosql/handler/server/internal/middleware"
 )
 
@@ -14,7 +14,7 @@ import (
 func (s *server) LambdaHandler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	mux := http.NewServeMux()
 
-	DB, err := ddbmanager.New(ctx, s.awsConfig.region)
+	DB, err := dynamodb_manager.New(ctx, s.awsConfig.region)
 	if err != nil {
 		return events.APIGatewayProxyResponse{}, err
 	}

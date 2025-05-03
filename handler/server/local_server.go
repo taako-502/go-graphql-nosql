@@ -7,13 +7,13 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/playground"
-	ddbmanager "github.com/taako-502/go-graphql-nosql/handler/dynamodb"
+	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
 	"github.com/taako-502/go-graphql-nosql/handler/server/internal/middleware"
 )
 
 func (s *server) LocalServer() error {
 	ctx := context.Background()
-	DB, err := ddbmanager.NewForLocal(ctx, s.dynamoEndpoint)
+	DB, err := dynamodb_manager.NewForLocal(ctx, s.dynamoEndpoint)
 	if err != nil {
 		return err
 	}

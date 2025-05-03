@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	ddbmanager "github.com/taako-502/go-graphql-nosql/handler/dynamodb"
+	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
 )
 
 func main() {
@@ -18,11 +18,11 @@ func main() {
 
 	// ローカル環境で打鍵するときに使う
 	ctx := context.Background()
-	db, err := ddbmanager.NewForLocal(ctx, os.Getenv("MIGRATION_ENDPOINT"))
+	db, err := dynamodb_manager.NewForLocal(ctx, os.Getenv("MIGRATION_ENDPOINT"))
 	if err != nil {
 		log.Fatalf("DynamoDBの接続に失敗しました: %v", err)
 	}
-	manager := ddbmanager.DDBMnager{DB: db}
+	manager := dynamodb_manager.DDBMnager{DB: db}
 
 	// マイグレーション実行
 	fmt.Println("Running migrations...")

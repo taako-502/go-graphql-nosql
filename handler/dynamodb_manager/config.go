@@ -1,4 +1,4 @@
-package ddbmanager
+package dynamodb_manager
 
 import (
 	"context"
