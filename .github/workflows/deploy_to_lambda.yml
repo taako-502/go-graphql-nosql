@@ -51,9 +51,7 @@ jobs:
             -f Dockerfile.prod \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             --build-arg ENVIRONMENT=${{ vars.ENVIRONMENT }} \
-            --build-arg GRAPHQL_SERVER_PORT=${{ vars.GRAPHQL_SERVER_PORT }} \
             --build-arg DYNAMO_REGION=${{ secrets.DYNAMO_REGION }} \
-            --build-arg DYNAMO_ENDPOINT=${{ secrets.DYNAMO_ENDPOINT }} \
             --build-arg CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }} \
             --push \
             .
