@@ -18,7 +18,7 @@ func main() {
 
 	// ローカル環境で打鍵するときに使う
 	ctx := context.Background()
-	db, err := ddbmanager.New(ctx, os.Getenv("DYNAMO_REGION"))
+	db, err := ddbmanager.NewForLocal(ctx, os.Getenv("MIGRATION_ENDPOINT"))
 	if err != nil {
 		log.Fatalf("DynamoDBの接続に失敗しました: %v", err)
 	}
