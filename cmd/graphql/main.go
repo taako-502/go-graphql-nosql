@@ -22,8 +22,8 @@ func main() {
 	server := server.NewServer(
 		os.Getenv("DYNAMO_REGION"),
 		strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),
-		os.Getenv("DYNAMO_ENDPOINT"),
-		os.Getenv("GRAPHQL_SERVER_PORT"),
+		os.Getenv("DYNAMO_ENDPOINT"),     // ローカル環境のみ必要
+		os.Getenv("GRAPHQL_SERVER_PORT"), // ローカル環境のみ必要
 	)
 
 	// Lambda環境
