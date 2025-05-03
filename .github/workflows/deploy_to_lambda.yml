@@ -36,7 +36,7 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --no-cache \
@@ -49,7 +49,7 @@ jobs:
 
       - name: Deploy to AWS Lambda
         env:
-          FUNCTION_NAME: ${{ vars.AWS_LAMBDA_FUNCTION_NAME }}
-          IMAGE_URI: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ github.sha }}
+          FUNCTION_NAME: ${{ secrets.AWS_LAMBDA_FUNCTION_NAME }}
+          IMAGE_URI: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
         run: |
           aws lambda update-function-code --function-name $FUNCTION_NAME --image-uri $IMAGE_URI
