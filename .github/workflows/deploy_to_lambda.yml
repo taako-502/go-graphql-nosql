@@ -33,14 +33,6 @@ jobs:
         run: |
           echo "stage=prod" >> $GITHUB_ENV
 
-      - name: Verify ENVIRONMENT variable
-        run: |
-          if [ -z "${{ vars.ENVIRONMENT }}" ]; then
-            echo "ERROR: vars.ENVIRONMENT is not set!"
-            exit 1
-          fi
-          echo "vars.ENVIRONMENT is set to '${{ vars.ENVIRONMENT }}'"
-
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
