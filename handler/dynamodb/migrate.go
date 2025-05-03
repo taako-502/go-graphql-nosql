@@ -2,9 +2,11 @@ package ddbmanager
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
 
 	"github.com/guregu/dynamo/v2"
@@ -35,11 +37,10 @@ func (d *DDBMnager) Migration(ctx context.Context) error {
 
 func (d *DDBMnager) TableExists(ctx context.Context, tableName string) (bool, error) {
 	if _, err := d.DB.Table(tableName).Describe().Run(ctx); err != nil {
-		// FIXME: テーブルが存在しない場合のエラーを確認する
-		// var codeResourceNotFoundException = dynamodb.ErrCodeResourceNotFoundException
-		// if errors.As(err, &codeResourceNotFoundException) {
-		// 	return false, nil
-		// }
+		var notFound *types.ResourceNotFoundException
+		if errors.As(err, &notFound) {
+			return false, nil
+		}
 		return false, fmt.Errorf("DDBMnager.TableExists: %w", err)
 	}
 	return true, nil
