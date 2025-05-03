@@ -40,7 +40,6 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build --no-cache \
-            -f Dockerfile.dev \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
             --build-arg DYNAMO_REGION=${{ secrets.DYNAMO_REGION }} \
             --push \
