@@ -11,17 +11,20 @@ import (
 )
 
 // Handler is the main function called by AWS Lambda.
-func (s *server) LambdaHandler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	mux := http.NewServeMux()
 
 	DB, err := dynamodb_manager.New(ctx, s.awsConfig.region)
 	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+		return events.APIGatewayProxyResponse{
+			StatusCode: http.StatusInternalServerError,
+			Body:       "Failed to create DynamoDB client",
+		}, err
 	}
 	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
 	handler := middleware.CORS(mux, s.corsAllowedOrigins)
 	adapter := httpadapter.New(handler)
 
-	return adapter.ProxyWithContext(ctx, req)
+	return adapter.ProxyWithContext(ctx, event)
 }

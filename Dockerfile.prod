@@ -1,14 +1,13 @@
-FROM golang:1.24 AS builder
-WORKDIR /app
+FROM golang:1.24 AS build
+
+WORKDIR /graphql
 
 COPY go.mod go.sum ./
-RUN go mod download
-
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -tags lambda.norpc -o bootstrap cmd/graphql/main.go
 
+RUN go build -tags lambda.norpc -o main ./cmd/graphql/main.go
 FROM public.ecr.aws/lambda/provided:al2023
-WORKDIR /var/task
-COPY --from=builder /app/bootstrap ./bootstrap
-ENTRYPOINT ["bootstrap"]
+
+COPY --from=build /graphql/main ./main
+
+ENTRYPOINT [ "./main" ]
