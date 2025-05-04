@@ -11,14 +11,15 @@ import (
 	"github.com/taako-502/go-graphql-nosql/handler/server/internal/middleware"
 )
 
-// Handler is the main function called by AWS Lambda.
-func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	log.Printf("Received request: %s %s", event.HTTPMethod, event.Path)
+// Handler AWS Lambdaのハンドラー
+// API GatewayのHTTP APIを利用するため、V2のハンドラーを使用
+func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	log.Printf("Received request: %s %s", event.RequestContext.HTTP.Method, event.RequestContext.HTTP.Path)
 
 	DB, err := dynamodb_manager.New(ctx, s.awsConfig.region)
 	if err != nil {
 		log.Printf("Failed to create DynamoDB client: %v", err)
-		return events.APIGatewayProxyResponse{
+		return events.APIGatewayV2HTTPResponse{
 			StatusCode: http.StatusInternalServerError,
 			Body:       "Failed to create DynamoDB client",
 		}, err
@@ -32,14 +33,8 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxy
 	mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
 	// NOTE: CORSはAPI Gatewayで設定
-	adapter := httpadapter.New(mux)
+	adapter := httpadapter.NewV2(mux)
 
 	log.Println("Invoking HTTP adapter")
-
-	resp, err := adapter.ProxyWithContext(ctx, event)
-	log.Printf("Lambda response: %+v", resp)
-	if err != nil {
-		log.Printf("Lambda error: %v", err)
-	}
-	return resp, err
+	return adapter.ProxyWithContext(ctx, event)
 }
