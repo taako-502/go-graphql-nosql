@@ -29,6 +29,7 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayV2HTT
 
 	mux := http.NewServeMux()
 	// AWS LambdaとAPI Gateway側で/graphqlに接続している
+	// FIXME: どちらか削除すること
 	mux.Handle("POST /", middleware.GraphqlHandler(DB, s.awsConfig.region))
 	mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
