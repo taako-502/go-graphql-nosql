@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/taako-502/go-graphql-nosql/pkg/handler/graph"
 
@@ -11,9 +12,12 @@ import (
 )
 
 func GraphqlHandler(DB *dynamo.DB, region string) http.HandlerFunc {
-	c := graph.Config{Resolvers: &graph.Resolver{
-		DB: DB,
-	}}
+	c := graph.Config{Resolvers: graph.NewResolver(DB,
+		graph.DBNames{
+			User: os.Getenv("USER_TABLE_NAME"),
+			Todo: os.Getenv("TODO_TABLE_NAME"),
+		},
+	)}
 	srv := handler.New(graph.NewExecutableSchema(c))
 	srv.AddTransport(transport.POST{})
 	return func(w http.ResponseWriter, r *http.Request) {
