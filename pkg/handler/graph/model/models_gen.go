@@ -2,6 +2,9 @@
 
 package model
 
+type Mutation struct {
+}
+
 type NewTodo struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -14,11 +17,5 @@ type NewUser struct {
 	Password string `json:"password"`
 }
 
-type User struct {
-	ID           string `json:"id"`
-	Username     string `json:"username"`
-	PasswordHash string `json:"passwordHash"`
-	IsAdmin      bool   `json:"isAdmin"`
-	CreatedAt    string `json:"createdAt"`
-	UpdatedAt    string `json:"updatedAt"`
+type Query struct {
 }
