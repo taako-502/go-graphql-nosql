@@ -30,8 +30,8 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxy
 	// mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
 	mux.Handle("POST /", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
-	// handler := middleware.CORS(mux, s.corsAllowedOrigins)
-	adapter := httpadapter.New(mux)
+	handler := middleware.CORS(mux, s.corsAllowedOrigins)
+	adapter := httpadapter.New(handler)
 
 	log.Println("Invoking HTTP adapter")
 	return adapter.ProxyWithContext(ctx, event)
