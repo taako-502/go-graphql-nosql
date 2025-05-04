@@ -31,6 +31,7 @@ func main() {
 			os.Getenv("DYNAMO_REGION"),
 			strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),
 		)
+		log.Println("Lambda is starting in environment:", env)
 		lambda.Start(server.LambdaHandler)
 	}
 }
