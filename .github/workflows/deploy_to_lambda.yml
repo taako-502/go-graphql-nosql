@@ -3,11 +3,11 @@ name: Deploy to AWS Lambda
 on:
   push:
     branches:
-      - chore/deploy-to-aws-lambda
+      - main
 
 jobs:
   deploy:
-    if: "${{ github.ref == 'refs/heads/chore/deploy-to-aws-lambda' }}"
+    if: "${{ github.ref == 'refs/heads/main' }}"
     environment: prod
     runs-on: ubuntu-latest
     steps:
