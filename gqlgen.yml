@@ -87,7 +87,7 @@ models:
       - github.com/99designs/gqlgen/graphql.Int32
 
   Todo:
-    model: go-graphql-nosql/graph/model.Todo
+    model: github.com/taako-502/go-graphql-nosql/pkg/handler/graph/model.Todo
 
   User:
-    model: go-graphql-nosql/graph/model.User
+    model: github.com/taako-502/go-graphql-nosql/pkg/handler/graph/model.User
