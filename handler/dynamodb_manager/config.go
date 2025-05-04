@@ -14,7 +14,6 @@ var TEST_REGION = "ap-northeast-1"
 
 // 引数はオプショナルにすること
 func New(ctx context.Context, region string) (*dynamo.DB, error) {
-	// NOTE: 一時的にコメントアウト
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
 	if err != nil {
 		return nil, err
