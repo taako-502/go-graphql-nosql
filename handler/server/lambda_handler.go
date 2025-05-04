@@ -34,5 +34,11 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxy
 	adapter := httpadapter.New(mux)
 
 	log.Println("Invoking HTTP adapter")
-	return adapter.ProxyWithContext(ctx, event)
+
+	resp, err := adapter.ProxyWithContext(ctx, event)
+	log.Printf("Lambda response: %+v", resp)
+	if err != nil {
+		log.Printf("Lambda error: %v", err)
+	}
+	return resp, err
 }
