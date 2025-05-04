@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
+	"github.com/taako-502/go-graphql-nosql/pkg/dynamodb_manager"
 )
 
 func main() {

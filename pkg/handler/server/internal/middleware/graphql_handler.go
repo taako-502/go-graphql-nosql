@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/taako-502/go-graphql-nosql/handler/graph"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"

@@ -7,7 +7,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/graph/model"
 
 	"github.com/guregu/dynamo/v2"
 )

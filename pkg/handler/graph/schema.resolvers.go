@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/taako-502/go-graphql-nosql/handler/graph/model"
-	"github.com/taako-502/go-graphql-nosql/handler/utility"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/graph/model"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/utility"
 
 	"github.com/google/uuid"
 )

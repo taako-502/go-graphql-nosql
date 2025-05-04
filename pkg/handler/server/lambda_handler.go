@@ -7,8 +7,8 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
-	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
-	"github.com/taako-502/go-graphql-nosql/handler/server/internal/middleware"
+	"github.com/taako-502/go-graphql-nosql/pkg/dynamodb_manager"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/server/internal/middleware"
 )
 
 // Handler AWS Lambdaのハンドラー

@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/taako-502/go-graphql-nosql/handler/dynamodb_manager"
-	"github.com/taako-502/go-graphql-nosql/handler/server/internal/middleware"
+	"github.com/taako-502/go-graphql-nosql/pkg/dynamodb_manager"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/server/internal/middleware"
 )
 
 func (s *server) LocalServer() error {

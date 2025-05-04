@@ -7,7 +7,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/joho/godotenv"
-	"github.com/taako-502/go-graphql-nosql/handler/server"
+	"github.com/taako-502/go-graphql-nosql/pkg/handler/server"
 )
 
 func main() {
