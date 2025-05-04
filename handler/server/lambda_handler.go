@@ -27,11 +27,11 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxy
 	log.Println("Successfully created DynamoDB client")
 
 	mux := http.NewServeMux()
-	// mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
+	// AWS LambdaとAPI Gateway側で/graphqlに接続している
 	mux.Handle("POST /", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
-	handler := middleware.CORS(mux, s.corsAllowedOrigins)
-	adapter := httpadapter.New(handler)
+	// NOTE: CORSはAPI Gatewayで設定
+	adapter := httpadapter.New(mux)
 
 	log.Println("Invoking HTTP adapter")
 	return adapter.ProxyWithContext(ctx, event)
