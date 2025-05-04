@@ -11,11 +11,20 @@ type awsConfig struct {
 	region string
 }
 
-func NewServer(awsRegion string, corsAllowedOrigins []string, dynamoEndpoint, graphqlServerPort string) *server {
+func NewServerForLocal(awsRegion string, corsAllowedOrigins []string, dynamoEndpoint, graphqlServerPort string) *server {
 	return &server{
 		corsAllowedOrigins: corsAllowedOrigins,
 		dynamoEndpoint:     dynamoEndpoint,
 		graphqlServerPort:  graphqlServerPort,
+		awsConfig: &awsConfig{
+			region: awsRegion,
+		},
+	}
+}
+
+func NewServerForLambda(awsRegion string, corsAllowedOrigins []string) *server {
+	return &server{
+		corsAllowedOrigins: corsAllowedOrigins,
 		awsConfig: &awsConfig{
 			region: awsRegion,
 		},

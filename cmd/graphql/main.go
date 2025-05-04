@@ -17,20 +17,21 @@ func main() {
 		if err := godotenv.Load(".env"); err != nil {
 			log.Printf("環境変数の読込に失敗しました: %v\r\n", err)
 		}
+		server := server.NewServerForLocal(
+			os.Getenv("DYNAMO_REGION"),
+			strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),
+			os.Getenv("DYNAMO_ENDPOINT"),     // ローカル環境のみ必要
+			os.Getenv("GRAPHQL_SERVER_PORT"), // ローカル環境のみ必要
+		)
+		panic(server.LocalServer())
 	}
 
-	server := server.NewServer(
-		os.Getenv("DYNAMO_REGION"),
-		strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),
-		os.Getenv("DYNAMO_ENDPOINT"),
-		os.Getenv("GRAPHQL_SERVER_PORT"),
-	)
-
-	// Lambda環境
 	if env == "dev" || env == "prod" {
+		server := server.NewServerForLambda(
+			os.Getenv("DYNAMO_REGION"),
+			strings.Split(os.Getenv("CORS_ALLOWED_ORIGINS"), ","),
+		)
+		log.Println("Lambda is starting in environment:", env)
 		lambda.Start(server.LambdaHandler)
 	}
-
-	// ローカル環境
-	panic(server.LocalServer())
 }
