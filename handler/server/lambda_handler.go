@@ -21,7 +21,7 @@ func (s *server) LambdaHandler(ctx context.Context, event events.APIGatewayProxy
 			Body:       "Failed to create DynamoDB client",
 		}, err
 	}
-	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region))
+	mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
 
 	handler := middleware.CORS(mux, s.corsAllowedOrigins)
 	adapter := httpadapter.New(handler)

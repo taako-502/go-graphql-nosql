@@ -19,8 +19,8 @@ func (s *server) LocalServer() error {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("GET /", playground.Handler("GraphQL playground", "/query"))
-	mux.Handle("POST /query", middleware.GraphqlHandler(DB, s.awsConfig.region))
+	mux.Handle("GET /", playground.Handler("GraphQL playground", "/graphql"))
+	mux.Handle("POST /graphql", middleware.GraphqlHandler(DB, s.awsConfig.region))
 	handlerWithCORS := middleware.CORS(mux, s.corsAllowedOrigins)
 
 	graphqlServerPort := s.graphqlServerPort
